@@ -1,5 +1,5 @@
 # -------- Stage 1: Build --------
-FROM node:20-slim AS builder
+FROM node:22-slim AS builder
 RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /app
 
@@ -27,7 +27,7 @@ RUN pnpm build
 RUN ls -la .next && ls -la .next/standalone
 
 # -------- Stage 2: Runtime --------
-FROM node:20-slim AS runner
+FROM node:22-slim AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
