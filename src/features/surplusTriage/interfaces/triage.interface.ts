@@ -3,6 +3,8 @@ export interface TriageResult {
   description: string;
   dynamicPrice: number;
   tier: "Tier 1" | "Tier 2";
+  quantity: number;
+  freshnessScore: number;
 }
 
 export interface ProcessTriageResponse {

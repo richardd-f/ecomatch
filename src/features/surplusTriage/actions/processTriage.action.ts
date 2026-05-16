@@ -44,13 +44,17 @@ export async function processTriageAction(base64Image: string) {
       Determine the dynamic pricing based on how close it is to closing time and the perceived condition of the food.
       The price must be in rupiah. Use $1 = Rp 15,500 as the exchange rate.
       Classify the food into either "Tier 1" (high quality, relatively fresh) or "Tier 2" (nearing expiry, slightly degraded visual appeal).
+      Estimate the quantity (number of items or portions) visible in the image.
+      Provide a freshnessScore from 1 to 100 based on visual condition.
       
       Respond with a JSON object matching this schema:
       {
         "productName": "string",
         "description": "string",
         "dynamicPrice": number,
-        "tier": "Tier 1" | "Tier 2"
+        "tier": "Tier 1" | "Tier 2",
+        "quantity": number,
+        "freshnessScore": number
       }
     `;
 
