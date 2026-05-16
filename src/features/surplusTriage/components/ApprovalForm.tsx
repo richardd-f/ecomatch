@@ -2,8 +2,9 @@
 
 import React, { useState } from "react";
 import { TriageResult } from "../interfaces/triage.interface";
-import { CheckCircle, Image as ImageIcon, Tag, Activity, FileText, ArrowRight } from "lucide-react";
+import { CheckCircle, Image as ImageIcon, Tag, Activity, FileText, ArrowRight, Leaf } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { publishProductAction } from "../actions/publishProduct.action";
 
 interface ApprovalFormProps {
   initialData: TriageResult;
@@ -14,6 +15,7 @@ export default function ApprovalForm({ initialData, imageUrl }: ApprovalFormProp
   const router = useRouter();
   const [formData, setFormData] = useState<TriageResult>(initialData);
   const [isPublishing, setIsPublishing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -26,12 +28,31 @@ export default function ApprovalForm({ initialData, imageUrl }: ApprovalFormProp
   const handlePublish = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsPublishing(true);
+    setError(null);
     
-    // Simulate API call to publish listing
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    
-    // Redirect to merchant dashboard or success page
-    router.push("/merchant");
+    try {
+      const result = await publishProductAction({
+        title: formData.productName,
+        description: formData.description,
+        dynamicPrice: formData.dynamicPrice,
+        tier: formData.tier,
+        quantity: formData.quantity,
+        freshnessScore: formData.freshnessScore,
+        imageUrl,
+      });
+
+      if (result.success) {
+        // Redirect to merchant dashboard
+        router.push("/merchant");
+      } else {
+        setError(result.error || "Failed to publish product");
+        setIsPublishing(false);
+      }
+    } catch (err) {
+      console.error(err);
+      setError("An unexpected error occurred.");
+      setIsPublishing(false);
+    }
   };
 
   const isTier1 = formData.tier === "Tier 1";
@@ -118,27 +139,68 @@ export default function ApprovalForm({ initialData, imageUrl }: ApprovalFormProp
               />
             </div>
 
-            {/* Price */}
-            <div className="flex flex-col gap-2">
-              <label htmlFor="dynamicPrice" className="flex items-center gap-2 text-sm font-bold text-[#1E293B]">
-                <span className="font-serif text-[#2F5D50] font-bold text-lg leading-none">Rp</span> Dynamic Price
-              </label>
-              <div className="relative flex items-center">
-                <span className="absolute left-4 text-[#1E293B]/50 font-bold">Rp</span>
+            {/* Price & Quantity Row */}
+            <div className="flex gap-4">
+              <div className="flex flex-col gap-2 w-1/2">
+                <label htmlFor="dynamicPrice" className="flex items-center gap-2 text-sm font-bold text-[#1E293B]">
+                  <span className="font-serif text-[#2F5D50] font-bold text-lg leading-none">Rp</span> Dynamic Price
+                </label>
+                <div className="relative flex items-center">
+                  <span className="absolute left-4 text-[#1E293B]/50 font-bold">Rp</span>
+                  <input
+                    id="dynamicPrice"
+                    name="dynamicPrice"
+                    type="number"
+                    value={formData.dynamicPrice}
+                    onChange={handleChange}
+                    className="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-[#E2E8F0] focus:border-[#2F5D50] focus:ring-4 focus:ring-[#A4B69A]/20 outline-none transition-all text-xl font-bold text-[#2F5D50]"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2 w-1/2">
+                <label htmlFor="quantity" className="flex items-center gap-2 text-sm font-bold text-[#1E293B]">
+                  Quantity
+                </label>
                 <input
-                  id="dynamicPrice"
-                  name="dynamicPrice"
+                  id="quantity"
+                  name="quantity"
                   type="number"
-                  value={formData.dynamicPrice}
+                  min="1"
+                  value={formData.quantity}
                   onChange={handleChange}
-                  className="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-[#E2E8F0] focus:border-[#2F5D50] focus:ring-4 focus:ring-[#A4B69A]/20 outline-none transition-all text-xl font-bold text-[#2F5D50]"
+                  className="w-full px-4 py-3 rounded-xl border-2 border-[#E2E8F0] focus:border-[#2F5D50] focus:ring-4 focus:ring-[#A4B69A]/20 outline-none transition-all text-xl font-bold text-[#1E293B]"
                   required
                 />
               </div>
             </div>
+
+            {/* Freshness Score */}
+            <div className="flex flex-col gap-2">
+              <label htmlFor="freshnessScore" className="flex items-center gap-2 text-sm font-bold text-[#1E293B]">
+                <Leaf className="w-4 h-4 text-[#2F5D50]" /> Freshness Score (1-100)
+              </label>
+              <input
+                id="freshnessScore"
+                name="freshnessScore"
+                type="number"
+                min="1"
+                max="100"
+                value={formData.freshnessScore}
+                onChange={handleChange}
+                className="w-full px-4 py-3 rounded-xl border-2 border-[#E2E8F0] focus:border-[#2F5D50] focus:ring-4 focus:ring-[#A4B69A]/20 outline-none transition-all text-lg font-medium text-[#1E293B]"
+                required
+              />
+            </div>
           </div>
 
-          <div className="flex flex-col pt-4 mt-auto">
+          <div className="flex flex-col pt-4 mt-auto gap-3">
+            {error && (
+              <div className="p-3 bg-red-100 border border-red-200 text-red-600 rounded-lg text-sm text-center font-medium">
+                {error}
+              </div>
+            )}
             <button
               type="submit"
               disabled={isPublishing}
@@ -152,7 +214,7 @@ export default function ApprovalForm({ initialData, imageUrl }: ApprovalFormProp
                 </>
               )}
             </button>
-            <p className="text-center text-xs text-[#1E293B]/50 mt-3 font-medium">
+            <p className="text-center text-xs text-[#1E293B]/50 mt-1 font-medium">
               You can edit this later from your dashboard
             </p>
           </div>

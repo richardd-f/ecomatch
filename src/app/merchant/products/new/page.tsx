@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { ArrowLeft, Construction } from "lucide-react";
+import { ArrowLeft, Sparkles } from "lucide-react";
+import ManualProductForm from "./ManualProductForm";
 
 export const metadata = {
   title: "Add New Product | EcoMatch Merchant",
@@ -7,7 +8,7 @@ export const metadata = {
 
 export default function NewProductPage() {
   return (
-    <div className="max-w-3xl mx-auto w-full pt-8 pb-16">
+    <div className="max-w-3xl mx-auto w-full pt-8 pb-16 px-4">
       <Link 
         href="/merchant"
         className="flex items-center gap-2 text-sm text-[#1E293B]/60 hover:text-[#1E293B] transition-colors mb-6 w-fit"
@@ -16,31 +17,27 @@ export default function NewProductPage() {
         Back to Dashboard
       </Link>
 
-      <div className="bg-white rounded-2xl border border-[#1E293B]/10 p-12 text-center flex flex-col items-center justify-center shadow-sm">
-        <div className="w-16 h-16 rounded-2xl bg-[#F2EFE7] text-[#D4A373] flex items-center justify-center mb-6">
-          <Construction className="w-8 h-8" />
-        </div>
-        <h1 className="text-2xl font-bold text-[#1E293B] mb-2">
-          Product Creation Form
-        </h1>
-        <p className="text-[#1E293B]/70 max-w-sm mb-8">
-          This page is under construction. Soon you will be able to upload images, add descriptions, and use Gemini AI to automatically set the optimal price.
-        </p>
-        <div className="flex flex-col gap-3 w-full max-w-xs">
+      <div className="mb-8">
+        <div className="bg-[#2F5D50] text-[#F2EFE7] rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
+          <div className="flex flex-col gap-2 max-w-lg">
+            <h1 className="text-2xl font-bold flex items-center gap-2">
+              <Sparkles className="w-6 h-6 text-[#A4B69A]" />
+              Manual Product Entry
+            </h1>
+            <p className="text-[#A4B69A] text-sm leading-relaxed">
+              Manually input product details. For a faster experience, try our AI Surplus Triage which automatically determines the best price and description.
+            </p>
+          </div>
           <Link
             href="/merchant/surplusTriage"
-            className="px-6 py-3 rounded-xl bg-[#2F5D50] text-white font-medium hover:opacity-90 transition-opacity"
+            className="shrink-0 px-6 py-3 bg-[#F2EFE7] text-[#2F5D50] hover:bg-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all"
           >
-            Use AI Surplus Triage Instead
-          </Link>
-          <Link
-            href="/merchant"
-            className="px-6 py-3 rounded-xl border-2 border-[#E2E8F0] text-[#1E293B] font-medium hover:bg-[#F2EFE7] transition-colors"
-          >
-            Return to Dashboard
+            Use AI Triage
           </Link>
         </div>
       </div>
+
+      <ManualProductForm />
     </div>
   );
 }
