@@ -72,7 +72,7 @@ export default function ProductDetailPage() {
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 p-[3%] max-w-7xl mx-auto">
       {/* Back link */}
       <button
         onClick={() => router.back()}
