@@ -12,12 +12,9 @@ cloudinary.config({
 });
 
 export async function processTriageAction(base64Image: string) {
-  // Buat variabel penampung URL redirect di luar blok try-catch
   let redirectUrl = "";
 
   try {
-    // 1. Ekstrak data base64 murni dan Mime Type dari react-webcam string secara instan
-    // Format react-webcam: "data:image/jpeg;base64,/9j/4AAQ..."
     const match = base64Image.match(/^data:(image\/\w+);base64,(.+)$/);
     if (!match) {
       throw new Error("Invalid image format from camera");
@@ -25,20 +22,17 @@ export async function processTriageAction(base64Image: string) {
     const mimeType = match[1];
     const base64Data = match[2];
 
-    // 2. Upload ke Cloudinary untuk arsip URL gambar
     const uploadResponse = await cloudinary.uploader.upload(base64Image, {
       folder: "surplus-triage",
     });
     const publicUrl = uploadResponse.secure_url;
 
-    // 3. Inisialisasi Gemini Vision dengan mengaktifkan Fitur NATIVE JSON Mode
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
-      generationConfig: { responseMimeType: "application/json" } // <--- Memaksa Gemini merespons JSON murni tanpa markdown wrapper
+      model: "gemini-3.1-flash-lite",
+      generationConfig: { responseMimeType: "application/json" }
     });
 
-    // Konteks Waktu Operasional Lokal
     const now = new Date();
     const currentTime = `${now.getHours()}:${now.getMinutes().toString().padStart(2, "0")}`;
     const closingTime = "22:00";
@@ -60,7 +54,6 @@ export async function processTriageAction(base64Image: string) {
       }
     `;
 
-    // Ambil data base64Data murni yang sudah kita potong di langkah ke-1 (Tanpa Network Re-fetch!)
     const result = await model.generateContent([
       systemPrompt,
       {
@@ -74,7 +67,6 @@ export async function processTriageAction(base64Image: string) {
     const text = result.response.text();
     const parsedResult: TriageResult = JSON.parse(text.trim());
 
-    // 4. Siapkan URL tujuan, jangan panggil fungsi redirect() di dalam blok try ini
     const queryParams = new URLSearchParams({
       data: JSON.stringify(parsedResult),
       imageUrl: publicUrl,
@@ -87,7 +79,6 @@ export async function processTriageAction(base64Image: string) {
     throw new Error("Failed to process triage due to internal AI generation issues.");
   }
 
-  // 5. Panggil fungsi redirect() AMAN di luar blok try-catch agar Next.js bisa memproses rute halaman dengan normal
   if (redirectUrl) {
     redirect(redirectUrl);
   }

@@ -31,7 +31,7 @@ export default function ApprovalForm({ initialData, imageUrl }: ApprovalFormProp
     await new Promise((resolve) => setTimeout(resolve, 800));
     
     // Redirect to merchant dashboard or success page
-    router.push("/merchant/products?success=true");
+    router.push("/merchant");
   };
 
   const isTier1 = formData.tier === "Tier 1";

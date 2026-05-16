@@ -26,12 +26,20 @@ export default function NewProductPage() {
         <p className="text-[#1E293B]/70 max-w-sm mb-8">
           This page is under construction. Soon you will be able to upload images, add descriptions, and use Gemini AI to automatically set the optimal price.
         </p>
-        <Link
-          href="/merchant"
-          className="px-6 py-3 rounded-xl bg-[#2F5D50] text-white font-medium hover:opacity-90 transition-opacity"
-        >
-          Return to Dashboard
-        </Link>
+        <div className="flex flex-col gap-3 w-full max-w-xs">
+          <Link
+            href="/merchant/surplusTriage"
+            className="px-6 py-3 rounded-xl bg-[#2F5D50] text-white font-medium hover:opacity-90 transition-opacity"
+          >
+            Use AI Surplus Triage Instead
+          </Link>
+          <Link
+            href="/merchant"
+            className="px-6 py-3 rounded-xl border-2 border-[#E2E8F0] text-[#1E293B] font-medium hover:bg-[#F2EFE7] transition-colors"
+          >
+            Return to Dashboard
+          </Link>
+        </div>
       </div>
     </div>
   );

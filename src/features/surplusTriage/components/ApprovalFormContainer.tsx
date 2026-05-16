@@ -1,36 +1,28 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import ApprovalForm from "./ApprovalForm";
-import { TriageResult } from "../interfaces/triage.interface";
 
 export default function ApprovalFormContainer() {
   const searchParams = useSearchParams();
   const router = useRouter();
   
-  const [initialData, setInitialData] = useState<TriageResult | null>(null);
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const dataStr = searchParams.get("data");
+  const imageUrl = searchParams.get("imageUrl");
 
-  useEffect(() => {
-    try {
-      const dataStr = searchParams.get("data");
-      const imgUrl = searchParams.get("imageUrl");
-      
-      if (!dataStr) {
-        setError("No triage data found. Please capture an image first.");
-        return;
-      }
-      
-      const parsed = JSON.parse(dataStr);
-      setInitialData(parsed);
-      setImageUrl(imgUrl);
-    } catch (err) {
-      setError("Failed to parse triage data.");
-      console.error(err);
+  const { initialData, error } = useMemo(() => {
+    if (!dataStr) {
+      return { initialData: null, error: "No triage data found. Please capture an image first." };
     }
-  }, [searchParams]);
+    try {
+      const parsed = JSON.parse(dataStr);
+      return { initialData: parsed, error: null };
+    } catch (err) {
+      console.error(err);
+      return { initialData: null, error: "Failed to parse triage data." };
+    }
+  }, [dataStr]);
 
   if (error) {
     return (
@@ -39,7 +31,7 @@ export default function ApprovalFormContainer() {
         <h2 className="text-xl font-bold text-[#1E293B]">Oops!</h2>
         <p className="text-[#1E293B]/70">{error}</p>
         <button 
-          onClick={() => router.push("/merchant/surplus-triage")}
+          onClick={() => router.push("/merchant/surplusTriage")}
           className="mt-4 px-6 py-3 bg-[#2F5D50] text-white rounded-xl font-medium"
         >
           Go Back
