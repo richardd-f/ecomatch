@@ -35,6 +35,13 @@ export const proxy = auth((req) => {
     }
   }
 
+  // Protect /cart route
+  if (nextUrl.pathname.startsWith("/cart")) {
+    if (!isLoggedIn) {
+      return NextResponse.redirect(new URL("/login", nextUrl));
+    }
+  }
+
   return NextResponse.next();
 });
 

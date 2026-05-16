@@ -19,6 +19,7 @@ import {
 import { MOCK_PRODUCTS } from "../../../data/mockProducts";
 import { PriceBadge } from "../../../components/PriceBadge";
 import { Product } from "../../../types/product.types";
+import { addToCartAction } from "../../../features/cart/actions/cart.actions";
 
 const IDR = (n: number) =>
   new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(n);
@@ -41,6 +42,7 @@ export default function ProductDetailPage() {
   const [qty, setQty] = useState(1);
   const [activeImg, setActiveImg] = useState(0);
   const [added, setAdded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   if (!product) {
     return (
@@ -58,8 +60,13 @@ export default function ProductDetailPage() {
   const savings = product.originalPrice - product.discountedPrice;
   const savingsPct = Math.round((savings / product.originalPrice) * 100);
 
-  const handleAddToCart = () => {
-    console.log("Added to cart", product, qty);
+  const handleAddToCart = async () => {
+    setIsLoading(true);
+    // Add multiple times based on qty
+    for (let i = 0; i < qty; i++) {
+      await addToCartAction(product.id);
+    }
+    setIsLoading(false);
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   };
@@ -265,7 +272,8 @@ export default function ProductDetailPage() {
 
             <button
               onClick={handleAddToCart}
-              className="w-full py-4 rounded-xl text-white flex items-center justify-center gap-2 transition-all"
+              disabled={isLoading || added}
+              className="w-full py-4 rounded-xl text-white flex items-center justify-center gap-2 transition-all disabled:opacity-80"
               style={{
                 backgroundColor: added ? "#A4B69A" : isFree ? "#A4B69A" : "#2F5D50",
                 fontWeight: 700,

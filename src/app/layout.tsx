@@ -24,7 +24,7 @@ export default async function RootLayout({
           userRole={user?.role?.toLowerCase() as any}
           businessName={user?.role === "MERCHANT" ? user.name ?? undefined : undefined}
         />
-        <main className="flex-grow w-full px-4 sm:px-6 lg:px-8 pt-6">
+        <main className="flex-grow w-full flex flex-col">
           {children}
         </main>
       </body>

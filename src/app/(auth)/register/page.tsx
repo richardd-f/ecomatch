@@ -10,10 +10,7 @@ const STATS = [
 
 export default function RegisterPage() {
   return (
-    <div
-      className="min-h-screen flex flex-col items-center justify-center px-4 py-12"
-      style={{ backgroundColor: "#F2EFE7" }}
-    >
+    <div className="flex-grow flex flex-col items-center justify-center px-4 py-8 md:py-12 bg-[#F2EFE7]">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="flex flex-col items-center gap-3 mb-6">

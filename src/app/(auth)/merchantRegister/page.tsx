@@ -12,7 +12,7 @@ const ONBOARDING_STEPS = [
 export default function MerchantRegisterPage() {
   return (
     <div
-      className="min-h-screen flex"
+      className="flex-grow flex"
       style={{ backgroundColor: "#F2EFE7" }}
     >
       {/* Left panel */}

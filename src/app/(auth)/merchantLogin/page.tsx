@@ -11,7 +11,7 @@ const TRUST_POINTS = [
 export default function MerchantLoginPage() {
   return (
     <div
-      className="min-h-screen flex"
+      className="flex-grow flex"
       style={{ backgroundColor: "#F2EFE7" }}
     >
       {/* Left panel — branding & trust (hidden on mobile) */}

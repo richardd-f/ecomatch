@@ -106,7 +106,7 @@ export function Navbar({ cartCount = 0, userName, userRole, businessName, onLogo
             {/* Cart — only for consumers or guests */}
             {!isMerchant && (
               <Link
-                href="/checkout"
+                href="/cart"
                 className="relative p-2 rounded-lg transition-colors hover:bg-white/10"
               >
                 <ShoppingCart className="w-5 h-5 text-white" />
