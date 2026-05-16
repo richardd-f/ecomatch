@@ -1,0 +1,67 @@
+import Link from "next/link";
+import { Product } from "../types/product.types";
+import { PriceBadge } from "./PriceBadge";
+
+interface ProductGridProps {
+  products: Product[];
+  onAddToCart?: (product: Product, qty: number) => void;
+}
+
+export function ProductGrid({ products, onAddToCart }: ProductGridProps) {
+  if (products.length === 0) {
+    return (
+      <div className="py-12 text-center" style={{ color: "#1E293B60" }}>
+        No products found matching your criteria.
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+      {products.map((product) => (
+        <Link
+          key={product.id}
+          href={`/product/${product.id}`}
+          className="group flex flex-col rounded-2xl overflow-hidden border transition-all hover:shadow-md"
+          style={{ backgroundColor: "white", borderColor: "#1E293B15" }}
+        >
+          <div className="relative aspect-square overflow-hidden bg-gray-100">
+            <img
+              src={product.imageUrl}
+              alt={product.name}
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+            {product.tier === "tier2" && (
+              <div className="absolute top-2 left-2">
+                <span
+                  className="px-2 py-1 rounded-md text-white text-[10px]"
+                  style={{ backgroundColor: "#A4B69A", fontWeight: 700 }}
+                >
+                  FREE
+                </span>
+              </div>
+            )}
+          </div>
+          <div className="p-3 flex flex-col gap-1 flex-1">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[10px] uppercase truncate" style={{ color: "#2F5D50", fontWeight: 600 }}>
+                {product.merchantName}
+              </span>
+            </div>
+            <h3 className="text-sm line-clamp-2" style={{ color: "#1E293B", fontWeight: 700, lineHeight: 1.3 }}>
+              {product.name}
+            </h3>
+            <div className="mt-auto pt-2">
+              <PriceBadge
+                tier={product.tier}
+                originalPrice={product.originalPrice}
+                discountedPrice={product.discountedPrice}
+                size="sm"
+              />
+            </div>
+          </div>
+        </Link>
+      ))}
+    </div>
+  );
+}

@@ -1,0 +1,178 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// -----------------------------------------------------------------------------
+// ENUMS (Strict type safety at the database level)
+// -----------------------------------------------------------------------------
+
+enum Role {
+  MERCHANT
+  CONSUMER
+}
+
+enum ProductTier {
+  TIER_1
+  TIER_2
+}
+
+enum ProductStatus {
+  AVAILABLE
+  PENDING
+  SOLD
+  CLAIMED
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  CANCELED
+  EXPIRED
+}
+
+enum ClaimStatus {
+  PENDING
+  PICKED_UP
+}
+
+// -----------------------------------------------------------------------------
+// MODELS
+// -----------------------------------------------------------------------------
+
+model User {
+  id             String  @id @default(cuid())
+  email          String  @unique
+  name           String
+  hashedPassword String  @map("hashed_password")
+  role           Role    @default(CONSUMER)
+  isVerified     Boolean @default(false) @map("is_verified")
+
+  // Geolocation (Optional, as users might deny browser location)
+  latitude  Float?
+  longitude Float?
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  products Product[]
+  cart     Cart?
+  orders   Order[]
+  claims   Claim[]
+
+  @@map("users")
+}
+
+model Product {
+  id          String        @id @default(cuid())
+  merchantId  String        @map("merchant_id")
+  title       String
+  description String        @db.Text
+  startPrice  Float         @map("start_price")
+  endPrice    Float         @map("end_price")
+  tier        ProductTier
+  status      ProductStatus @default(AVAILABLE)
+
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  merchant   User           @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  images     ProductImage[]
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+  claims     Claim[]
+
+  @@map("products")
+}
+
+model ProductImage {
+  id        String  @id @default(cuid())
+  productId String  @map("product_id")
+  imgUrl    String  @map("img_url")
+  isPrimary Boolean @default(false) @map("is_primary")
+
+  // Relations
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_images")
+}
+
+model Cart {
+  id        String   @id @default(cuid())
+  userId    String   @unique @map("user_id") // 1-to-1 relationship with User
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items CartItem[]
+
+  @@map("carts")
+}
+
+model CartItem {
+  id        String @id @default(cuid())
+  cartId    String @map("cart_id")
+  productId String @map("product_id")
+  quantity  Int    @default(1)
+
+  // Relations
+  cart    Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("cart_items")
+}
+
+model Order {
+  id          String      @id // Intentionally NOT defaulting to cuid() if you prefer Midtrans to generate it, or you generate a specific format before saving.
+  userId      String      @map("user_id")
+  grossAmount Float       @map("gross_amount")
+  status      OrderStatus @default(PENDING)
+
+  // Midtrans Specific Fields
+  snapToken             String? @map("snap_token")
+  midtransTransactionId String? @unique @map("midtrans_transaction_id")
+  paymentType           String? @map("payment_type")
+  transactionStatus     String? @map("transaction_status")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user  User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id              String @id @default(cuid())
+  orderId         String @map("order_id")
+  productId       String @map("product_id")
+  quantity        Int
+  priceAtPurchase Float  @map("price_at_purchase")
+
+  // Relations
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id]) // Prevent product deletion if order exists
+
+  @@map("order_items")
+}
+
+model Claim {
+  id        String      @id @default(cuid())
+  userId    String      @map("user_id")
+  productId String      @map("product_id")
+  qrToken   String      @unique @map("qr_token")
+  status    ClaimStatus @default(PENDING)
+  createdAt DateTime    @default(now()) @map("created_at")
+
+  // Relations
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("claims")
+}
