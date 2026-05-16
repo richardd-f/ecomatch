@@ -1,152 +1,40 @@
-"use client";
+import { prisma } from "@/lib/prisma";
+import { Product } from "@/types/product.types";
+import { HomeClient } from "./HomeClient";
 
-import { useState, useMemo } from "react";
-import { Search, SlidersHorizontal, Leaf, X } from "lucide-react";
-import { ProductGrid } from "../components/ProductGrid";
-import { MOCK_PRODUCTS } from "../data/mockProducts";
-import { Product } from "../types/product.types";
+export default async function Home() {
+  // Fetch available products
+  const dbProducts = await prisma.product.findMany({
+    where: { status: "AVAILABLE" },
+    include: {
+      merchant: true,
+      images: true,
+    },
+    orderBy: { createdAt: "desc" },
+  });
 
-const CATEGORIES = ["All", "Bakery", "Vegetables", "Prepared Meals"];
+  // Map to the Product interface expected by frontend
+  const products: Product[] = dbProducts.map((p) => {
+    const primaryImage = p.images.find((i) => i.isPrimary)?.imgUrl || p.images[0]?.imgUrl || "";
+    const additionalImages = p.images.filter((i) => !i.isPrimary).map((i) => i.imgUrl);
 
-export default function Home() {
-  const [search, setSearch] = useState("");
-  const [activeCategory, setActiveCategory] = useState("All");
-  const [tierFilter, setTierFilter] = useState<"all" | "tier1" | "tier2">("all");
+    return {
+      id: p.id,
+      name: p.title,
+      merchantName: p.merchant.name,
+      category: "All", // Categories aren't implemented in DB yet, defaulting
+      tier: p.tier === "TIER_1" ? "tier1" : "tier2",
+      imageUrl: primaryImage,
+      additionalImages,
+      originalPrice: p.startPrice,
+      discountedPrice: p.endPrice,
+      aiScore: p.freshnessScore || 0,
+      expiresAt: p.expiresAt.toISOString(),
+      fullDescription: p.description,
+      quantity: p.quantity,
+      unit: "pcs", // Default unit
+    };
+  });
 
-  const filtered = useMemo(() => {
-    return MOCK_PRODUCTS.filter((p) => {
-      if (search && !p.name.toLowerCase().includes(search.toLowerCase())) return false;
-      if (activeCategory !== "All" && p.category !== activeCategory) return false;
-      if (tierFilter !== "all" && p.tier !== tierFilter) return false;
-      return true;
-    });
-  }, [search, activeCategory, tierFilter]);
-
-  const onAddToCart = (product: Product, qty: number) => {
-    console.log("Added to cart", product.name, qty);
-  };
-
-  return (
-    <div className="flex flex-col gap-8 w-full max-w-7xl mx-auto pb-12">
-      {/* Hero Banner */}
-      <section className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-[#1E293B] to-[#2F5D50] px-6 py-10 md:px-12 md:py-16 shadow-lg">
-        <div className="relative z-10 flex flex-col gap-4">
-          <div className="flex items-center gap-2">
-            <Leaf className="w-5 h-5 text-[#A4B69A]" />
-            <span className="text-sm font-semibold text-[#A4B69A] tracking-wide uppercase">
-              AI-Powered Food Rescue
-            </span>
-          </div>
-          
-          <h1 className="text-3xl md:text-5xl font-extrabold text-white max-w-2xl leading-tight tracking-tight">
-            Rescue surplus food. <br className="hidden md:block" />
-            <span className="text-[#D4A373]">Save money. Save the planet.</span>
-          </h1>
-          
-          <p className="text-base md:text-lg text-white/80 max-w-2xl font-medium">
-            Every listing on EcoMatch is verified by our Gemini Vision AI. Food that might be wasted tomorrow is yours today — deeply discounted or completely free.
-          </p>
-
-          {/* Stats Row */}
-          <div className="flex flex-wrap gap-6 md:gap-10 mt-6 pt-6 border-t border-white/10">
-            {[
-              { label: "Items rescued today", value: "247" },
-              { label: "CO₂ avoided (kg)", value: "82" },
-              { label: "Active merchants", value: "63" },
-            ].map((stat) => (
-              <div key={stat.label} className="flex flex-col">
-                <span className="text-2xl md:text-3xl font-extrabold text-white">
-                  {stat.value}
-                </span>
-                <span className="text-xs md:text-sm font-medium text-white/60">
-                  {stat.label}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Discovery Section (Search & Filters) */}
-      <section className="flex flex-col gap-4 sticky top-0 z-20 bg-[#F2EFE7]/90 backdrop-blur-md py-4 -mx-4 px-4 sm:mx-0 sm:px-0">
-        
-        {/* Search Bar */}
-        <div className="relative w-full">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#1E293B]/40" />
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search for food, merchants, categories…"
-            className="w-full pl-12 pr-12 py-3.5 rounded-xl border border-[#1E293B]/10 bg-white text-[#1E293B] text-sm md:text-base font-medium outline-none transition-all focus:border-[#2F5D50] focus:ring-2 focus:ring-[#2F5D50]/20 shadow-sm"
-          />
-          {search && (
-            <button
-              onClick={() => setSearch("")}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-[#1E293B]/40 hover:text-[#1E293B]/70 transition-colors"
-              aria-label="Clear search"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          )}
-        </div>
-
-        {/* Filters Layout */}
-        <div className="flex items-center gap-3 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden">
-          <SlidersHorizontal className="w-5 h-5 shrink-0 text-[#1E293B]/50" />
-          
-          {/* Categories */}
-          <div className="flex items-center gap-2">
-            {CATEGORIES.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                  activeCategory === cat
-                    ? "bg-[#2F5D50] text-white shadow-md border-transparent"
-                    : "bg-white text-[#1E293B]/70 border border-[#1E293B]/10 hover:bg-[#1E293B]/5"
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-
-          {/* Divider */}
-          <div className="shrink-0 h-6 w-px bg-[#1E293B]/10 mx-2" />
-
-          {/* Tier Filters */}
-          <div className="flex items-center gap-2">
-            {[
-              { id: "all", label: "All Tiers", activeClass: "bg-[#1E293B] text-white" },
-              { id: "tier1", label: "🏷 Discounted", activeClass: "bg-[#D4A373] text-white" },
-              { id: "tier2", label: "✨ Free", activeClass: "bg-[#A4B69A] text-white" },
-            ].map((tier) => (
-              <button
-                key={tier.id}
-                onClick={() => setTierFilter(tier.id as any)}
-                className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border ${
-                  tierFilter === tier.id
-                    ? `${tier.activeClass} shadow-md border-transparent`
-                    : "bg-white text-[#1E293B]/70 border-[#1E293B]/10 hover:bg-[#1E293B]/5"
-                }`}
-              >
-                {tier.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Results Header */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-sm font-medium text-[#1E293B]/70">
-          Showing <span className="font-bold text-[#1E293B]">{filtered.length}</span> available item{filtered.length !== 1 ? "s" : ""}
-        </h2>
-      </div>
-
-      {/* Grid */}
-      <ProductGrid products={filtered} onAddToCart={onAddToCart} />
-    </div>
-  );
+  return <HomeClient products={products} />;
 }

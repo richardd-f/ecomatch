@@ -77,6 +77,9 @@ model Product {
   tier        ProductTier
   status      ProductStatus @default(AVAILABLE)
 
+  quantity       Int      @default(1)
+  freshnessScore Int?     @map("freshness_score")
+
   expiresAt DateTime @map("expires_at")
   createdAt DateTime @default(now()) @map("created_at")
 
