@@ -88,17 +88,6 @@ export function Navbar({ cartCount = 0, userName, userRole, businessName, onLogo
               </Link>
             ))}
 
-            {/* Merchant portal pill for guests */}
-            {!userName && (
-              <Link
-                href="/merchantLogin"
-                className="ml-2 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs transition-colors hover:opacity-90"
-                style={{ backgroundColor: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.1)" }}
-              >
-                <Store className="w-3 h-3" />
-                Merchant Portal
-              </Link>
-            )}
           </div>
 
           {/* Right side */}
@@ -125,23 +114,25 @@ export function Navbar({ cartCount = 0, userName, userRole, businessName, onLogo
               <div className="hidden md:block relative">
                 <button
                   onClick={() => setAccountOpen((v) => !v)}
-                  className="flex items-center gap-2 px-2 py-1.5 rounded-lg transition-colors hover:bg-white/10"
+                  className={`flex items-center transition-colors hover:bg-white/10 ${isMerchant ? 'gap-2 px-4 py-2 rounded-full' : 'gap-2 px-1 py-1 pr-4 rounded-full'}`}
+                  style={isMerchant ? { backgroundColor: "#2F5D50" } : {}}
                 >
-                  <div
-                    className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs"
-                    style={{ backgroundColor: isMerchant ? "#2F5D50" : "#A4B69A", fontWeight: 700 }}
-                  >
-                    {(businessName ?? userName)[0].toUpperCase()}
-                  </div>
-                  <div className="text-left">
-                    <p className="text-xs text-white leading-none" style={{ fontWeight: 600 }}>
-                      {isMerchant ? (businessName ?? userName) : userName}
-                    </p>
-                    <p style={{ fontSize: "0.6rem", color: "rgba(255,255,255,0.45)" }}>
-                      {isMerchant ? "Merchant" : "Shopper"}
-                    </p>
-                  </div>
-                  <ChevronDown className="w-3 h-3 text-white/50" />
+                  {isMerchant ? (
+                    <>
+                      <Store className="w-4 h-4 text-white" />
+                      <span className="text-sm text-white" style={{ fontWeight: 600 }}>Merchant</span>
+                    </>
+                  ) : (
+                    <>
+                      <img 
+                        src={`https://ui-avatars.com/api/?name=${userName}&background=A4B69A&color=fff`} 
+                        alt="Profile" 
+                        className="w-8 h-8 rounded-full" 
+                      />
+                      <span className="text-sm text-white" style={{ fontWeight: 600 }}>{userName}</span>
+                      <ChevronDown className="w-3 h-3 text-white/50 ml-1" />
+                    </>
+                  )}
                 </button>
 
                 {/* Account dropdown */}
@@ -184,19 +175,10 @@ export function Navbar({ cartCount = 0, userName, userRole, businessName, onLogo
               <div className="hidden md:flex items-center gap-2">
                 <Link
                   href="/login"
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs text-white transition-colors hover:bg-white/10"
-                  style={{ border: "1px solid rgba(255,255,255,0.15)" }}
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm text-white transition-colors hover:bg-white/10"
+                  style={{ border: "1px solid rgba(255,255,255,0.15)", fontWeight: 600 }}
                 >
-                  <ShoppingBag className="w-3 h-3" />
-                  Shopper Login
-                </Link>
-                <Link
-                  href="/merchantLogin"
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs text-white transition-colors hover:opacity-90"
-                  style={{ backgroundColor: "#2F5D50" }}
-                >
-                  <Store className="w-3 h-3" />
-                  Merchant
+                  Login
                 </Link>
               </div>
             )}
@@ -236,21 +218,27 @@ export function Navbar({ cartCount = 0, userName, userRole, businessName, onLogo
           <div className="border-t mt-1 pt-2" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
             {userName ? (
               <>
-                <div className="flex items-center gap-2 px-3 py-2">
-                  <div
-                    className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs"
-                    style={{ backgroundColor: isMerchant ? "#2F5D50" : "#A4B69A", fontWeight: 700 }}
-                  >
-                    {(businessName ?? userName)[0].toUpperCase()}
-                  </div>
-                  <div>
-                    <p className="text-xs text-white" style={{ fontWeight: 600 }}>
-                      {isMerchant ? (businessName ?? userName) : userName}
-                    </p>
-                    <p style={{ fontSize: "0.6rem", color: "rgba(255,255,255,0.4)" }}>
-                      {isMerchant ? "Merchant" : "Shopper"}
-                    </p>
-                  </div>
+                <div className="flex items-center gap-3 px-3 py-2">
+                  {isMerchant ? (
+                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full" style={{ backgroundColor: "#2F5D50" }}>
+                      <Store className="w-4 h-4 text-white" />
+                      <span className="text-sm text-white" style={{ fontWeight: 600 }}>Merchant</span>
+                    </div>
+                  ) : (
+                    <>
+                      <img 
+                        src={`https://ui-avatars.com/api/?name=${userName}&background=A4B69A&color=fff`} 
+                        alt="Profile" 
+                        className="w-8 h-8 rounded-full" 
+                      />
+                      <div>
+                        <p className="text-sm text-white" style={{ fontWeight: 600 }}>
+                          {userName}
+                        </p>
+                        <p style={{ fontSize: "0.65rem", color: "rgba(255,255,255,0.5)" }}>Shopper</p>
+                      </div>
+                    </>
+                  )}
                 </div>
                 <button
                   onClick={() => { handleLogout(); setMenuOpen(false); }}
@@ -267,16 +255,7 @@ export function Navbar({ cartCount = 0, userName, userRole, businessName, onLogo
                   className="flex items-center gap-2 px-3 py-2.5 rounded-md text-sm text-white/70"
                 >
                   <ShoppingBag className="w-4 h-4" />
-                  Shopper Login
-                </Link>
-                <Link
-                  href="/merchantLogin"
-                  onClick={() => setMenuOpen(false)}
-                  className="flex items-center gap-2 px-3 py-2.5 rounded-md text-sm mt-1 text-white"
-                  style={{ backgroundColor: "#2F5D50" }}
-                >
-                  <Store className="w-4 h-4" />
-                  Merchant Portal
+                  Login
                 </Link>
               </>
             )}
