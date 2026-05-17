@@ -2,13 +2,23 @@ import { Leaf, ShoppingBag, Recycle } from "lucide-react";
 import Link from "next/link";
 import { RegisterForm } from "@/features/auth/components/RegisterForm";
 
-const STATS = [
-  { value: "2.4M", label: "meals rescued to date" },
-  { value: "63+", label: "partner merchants" },
-  { value: "Free", label: "to join as a shopper" },
-];
+import { prisma } from "@/lib/prisma";
 
-export default function RegisterPage() {
+export default async function RegisterPage() {
+  const merchantsCount = await prisma.user.count({ where: { role: "MERCHANT" } });
+  
+  // Rescued meals could be calculated based on CLAIMED products or OrderItems. Let's use ordered items or claimed products.
+  const rescuedAggregate = await prisma.orderItem.aggregate({
+    _sum: { quantity: true },
+    where: { order: { status: { in: ["PAID"] } } }
+  });
+  const rescuedMeals = rescuedAggregate._sum.quantity || 0;
+
+  const STATS = [
+    { value: `${rescuedMeals}+`, label: "meals rescued to date" },
+    { value: `${merchantsCount}+`, label: "partner merchants" },
+    { value: "Free", label: "to join as a shopper" },
+  ];
   return (
     <div className="flex-grow flex flex-col items-center justify-center px-4 py-8 md:py-12 bg-[#F2EFE7]">
       <div className="w-full max-w-md">
