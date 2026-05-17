@@ -9,7 +9,8 @@ import { logoutAction } from "../features/auth/actions/auth.actions";
 export const NAV_CONFIG = {
   consumer: {
     mainNav: [
-      { label: "Marketplace", href: "/" }
+      { label: "Marketplace", href: "/" },
+      { label: "About", href: "/about" }
     ],
     dropdown: [
       { label: "My Items", href: "/myItems", icon: "Package" }

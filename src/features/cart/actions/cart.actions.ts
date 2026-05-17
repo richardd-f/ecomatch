@@ -38,13 +38,23 @@ export async function addToCartAction(productId: string, requestedQuantity: numb
   }
 
   try {
+    // Verify user exists in DB (JWT may hold stale ID after re-seed)
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { id: true }
+    });
+
+    if (!user) {
+      return { error: "Your account was not found. Please log out and log back in." };
+    }
+
     let cart = await prisma.cart.findUnique({
-      where: { userId: session.user.id },
+      where: { userId: user.id },
     });
 
     if (!cart) {
       cart = await prisma.cart.create({
-        data: { userId: session.user.id },
+        data: { userId: user.id },
       });
     }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
 import { updateCartItemQuantityAction, removeCartItemAction } from "../actions/cart.actions";
 import Link from "next/link";
@@ -45,7 +45,15 @@ export function CartList({ initialItems }: { initialItems: CartItemWithProduct[]
   
   const [isPending, startTransition] = useTransition();
 
-  // Note: quantity adjustments are synced via optimistic updates in handleUpdateQuantity
+  // If we adjusted quantities, sync with backend on mount
+  useEffect(() => {
+    items.forEach(item => {
+      if (item.originalQty) {
+        void updateCartItemQuantityAction(item.id, item.quantity);
+      }
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (items.length === 0) {
     return (

@@ -51,16 +51,24 @@ export function ProductDetailClient({ product, isLoggedIn }: { product: Product;
       return;
     }
     setIsLoading(true);
-    const res = await addToCartAction(product.id, qty);
-    if (res && "error" in res && res.error) {
-      if (res.error === "Must be logged in to add to cart") {
-        router.push("/login");
+    try {
+      const res = await addToCartAction(product.id, qty);
+      if (res && "error" in res && res.error) {
+        if (res.error === "Must be logged in to add to cart") {
+          router.push("/login");
+          return;
+        }
+        alert(res.error);
         return;
       }
+      setAdded(true);
+      setTimeout(() => setAdded(false), 2000);
+    } catch (e) {
+      console.error("Add to cart failed:", e);
+      alert("Something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
-    setAdded(true);
-    setTimeout(() => setAdded(false), 2000);
   };
 
   return (
