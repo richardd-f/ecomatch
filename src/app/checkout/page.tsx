@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { auth } from "@/auth";
 import { getCartAction } from "@/features/cart/actions/cart.actions";
 import { redirect } from "next/navigation";
@@ -63,11 +64,17 @@ export default async function CheckoutPage() {
             </div>
             
             <div className="p-6 flex flex-col gap-6">
-              {items.map((item: any) => (
-                <div key={item.id} className="flex items-start gap-4">
-                  <div className="w-16 h-16 rounded-xl bg-[#F2EFE7] flex items-center justify-center shrink-0">
-                    <ShoppingBag className="w-6 h-6 text-[#1E293B]/20" />
-                  </div>
+              {items.map((item: any) => {
+                const imgUrl = item.product.images?.find((img: any) => img.isPrimary)?.imgUrl || item.product.images?.[0]?.imgUrl;
+                return (
+                  <div key={item.id} className="flex items-start gap-4">
+                    <div className="w-16 h-16 rounded-xl bg-[#F2EFE7] overflow-hidden flex items-center justify-center shrink-0">
+                      {imgUrl ? (
+                        <img src={imgUrl} alt={item.product.title} className="w-full h-full object-cover" />
+                      ) : (
+                        <ShoppingBag className="w-6 h-6 text-[#1E293B]/20" />
+                      )}
+                    </div>
                   <div className="flex-grow">
                     <h3 className="font-bold text-[#1E293B] text-sm line-clamp-1">{item.product.title}</h3>
                     <p className="text-xs text-[#1E293B]/60 mt-0.5 mb-1.5">
@@ -89,7 +96,8 @@ export default async function CheckoutPage() {
                     )}
                   </div>
                 </div>
-              ))}
+              );
+            })}
             </div>
           </div>
         </FadeIn>

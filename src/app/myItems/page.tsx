@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
@@ -26,7 +27,11 @@ export default async function MyItemsPage() {
     include: {
       items: {
         include: {
-          product: true,
+          product: {
+            include: {
+              images: true,
+            },
+          },
         },
       },
     },
@@ -56,7 +61,7 @@ export default async function MyItemsPage() {
             </div>
             <h2 className="text-xl font-bold text-[#1E293B] mb-2">No items yet</h2>
             <p className="text-[#1E293B]/60 mb-6 max-w-sm">
-              You haven't rescued any food yet. Explore the marketplace to find delicious deals and fight food waste!
+              You haven&apos;t rescued any food yet. Explore the marketplace to find delicious deals and fight food waste!
             </p>
             <Link
               href="/catalog"
