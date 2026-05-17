@@ -3,8 +3,8 @@ import { Product } from "@/types/product.types";
 import { ProductDetailClient } from "./ProductDetailClient";
 import Link from "next/link";
 
-export default async function ProductDetailPage({ params }: { params: { productId: string } }) {
-  const { productId } = params;
+export default async function ProductDetailPage({ params }: { params: Promise<{ productId: string }> }) {
+  const { productId } = await params;
 
   const dbProduct = await prisma.product.findUnique({
     where: { id: productId },

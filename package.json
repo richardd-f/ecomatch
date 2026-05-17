@@ -28,6 +28,7 @@
     "cloudinary": "^2.10.0",
     "gsap": "^3.15.0",
     "lucide-react": "^1.16.0",
+    "midtrans-client": "^1.4.3",
     "next": "16.2.3",
     "next-auth": "5.0.0-beta.31",
     "next-cloudinary": "^6.17.5",
@@ -40,6 +41,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/bcryptjs": "^3.0.0",
+    "@types/midtrans-client": "^1.4.0",
     "@types/node": "^20",
     "@types/pg": "^8.20.0",
     "@types/react": "^19",

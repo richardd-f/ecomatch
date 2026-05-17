@@ -185,12 +185,12 @@ export function CartList({ initialItems }: { initialItems: CartItemWithProduct[]
             </span>
           </div>
 
-          <button 
+          <Link 
+            href="/checkout"
             className="w-full py-3.5 rounded-xl bg-[#2F5D50] text-white font-medium hover:opacity-90 transition-opacity flex items-center justify-center"
-            onClick={() => alert("Proceed to Checkout clicked! (Integration pending)")}
           >
             Proceed to Checkout
-          </button>
+          </Link>
 
           <p className="text-xs text-center text-[#1E293B]/50 mt-4">
             By proceeding, you agree to rescue this food. Please pick it up before the expiration time!
