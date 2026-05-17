@@ -6,6 +6,9 @@ import { auth } from "../auth";
 export const metadata: Metadata = {
   title: "EcoMatch | AI Food Rescue",
   description: "Instantly bridging the gap between surplus inventory and community need.",
+  icons: {
+    icon: "/images/logo/Logo_Ecomatch_Baru-removebg-preview.png",
+  },
 };
 
 export default async function RootLayout({
