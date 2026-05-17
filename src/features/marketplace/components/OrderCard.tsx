@@ -18,8 +18,16 @@ export function OrderCard({ order }: OrderCardProps) {
   const isPending = order.status === "PENDING";
   const isCanceled = order.status === "CANCELED";
   const isExpired = order.status === "EXPIRED";
+  const isPickedUp = order.claimStatus === "PICKED_UP";
 
   const getStatusBadge = () => {
+    if (isPickedUp) {
+      return (
+        <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">
+          <CheckCircle2 className="w-3.5 h-3.5" /> Delivered
+        </span>
+      );
+    }
     if (isPaid) {
       return (
         <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">
@@ -112,7 +120,7 @@ export function OrderCard({ order }: OrderCardProps) {
             <OrderPaymentButton snapToken={order.snapToken} />
           )}
 
-          {isPaid && (
+          {isPaid && !isPickedUp && (
             <>
               <button
                 onClick={() => setIsQRModalOpen(true)}
