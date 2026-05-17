@@ -49,6 +49,7 @@ export async function claimOrderAction(orderId: string) {
     });
 
     revalidatePath("/merchant");
+    revalidatePath("/myItems");
 
     return { success: true, message: "Order claimed successfully!" };
   } catch (error) {

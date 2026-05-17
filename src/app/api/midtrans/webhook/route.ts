@@ -45,6 +45,23 @@ export async function POST(req: Request) {
       newStatus = "PENDING";
     }
 
+    // Fetch existing order to prevent reverting status
+    const existingOrder = await prisma.order.findUnique({
+      where: { id: orderId }
+    });
+
+    if (existingOrder) {
+      // Do not revert to PENDING if already PAID
+      if (existingOrder.status === "PAID" && newStatus === "PENDING") {
+        newStatus = "PAID";
+      }
+      
+      // Do not update anything if the item is already handed over
+      if (existingOrder.claimStatus === "PICKED_UP") {
+        return NextResponse.json({ success: true, message: "OK (Already picked up, ignoring webhook)" });
+      }
+    }
+
     // Update the order in the database
     await prisma.order.update({
       where: { id: orderId },
