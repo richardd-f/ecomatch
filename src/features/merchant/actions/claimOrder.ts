@@ -31,24 +31,30 @@ export async function claimOrderAction(orderId: string) {
       return { success: false, message: "Order has already been claimed or is not pending" };
     }
 
-    // Update order claimStatus and all products inside the order to CLAIMED
+    // Update order claimStatus and update products' status conditionally
     await prisma.$transaction(async (tx) => {
       await tx.order.update({
         where: { id: orderId },
         data: { claimStatus: "PICKED_UP" },
       });
 
-      const productIds = order.items.map(item => item.productId);
-      
-      if (productIds.length > 0) {
-        await tx.product.updateMany({
-          where: { id: { in: productIds } },
-          data: { status: "CLAIMED" },
+      for (const item of order.items) {
+        const prod = await tx.product.findUnique({
+          where: { id: item.productId }
         });
+        if (prod) {
+          // If no stock is left, mark as CLAIMED. Otherwise, keep it AVAILABLE.
+          const nextStatus = prod.quantity === 0 ? "CLAIMED" : "AVAILABLE";
+          await tx.product.update({
+            where: { id: item.productId },
+            data: { status: nextStatus },
+          });
+        }
       }
     });
 
     revalidatePath("/merchant");
+    revalidatePath("/myItems");
 
     return { success: true, message: "Order claimed successfully!" };
   } catch (error) {
