@@ -120,7 +120,7 @@ export default function AboutPage() {
       <section className="bg-[#F2EFE7] px-6 py-14 md:px-16">
         <FadeIn delay={0.1}>
           <p className="text-xs font-bold tracking-widest uppercase text-[#2F5D50] mb-8 text-center">
-            The problem we're solving
+            The problem we&apos;re solving
           </p>
         </FadeIn>
         <StaggerContainer
