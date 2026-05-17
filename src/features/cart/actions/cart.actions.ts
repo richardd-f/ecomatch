@@ -30,7 +30,7 @@ export async function getCartAction() {
   return cart;
 }
 
-export async function addToCartAction(productId: string) {
+export async function addToCartAction(productId: string, requestedQuantity: number = 1) {
   const session = await auth();
   if (!session?.user?.id) {
     return { error: "Must be logged in to add to cart" };
@@ -48,7 +48,7 @@ export async function addToCartAction(productId: string) {
     }
 
     // Auto-seed product if it doesn't exist in DB (using MOCK_PRODUCTS)
-    const dbProduct = await prisma.product.findUnique({ where: { id: productId } });
+    let dbProduct = await prisma.product.findUnique({ where: { id: productId } });
     if (!dbProduct) {
       const mock = MOCK_PRODUCTS.find(p => p.id === productId);
       if (mock) {
@@ -58,7 +58,7 @@ export async function addToCartAction(productId: string) {
              data: { name: mock.merchantName, email: "mock@merchant.com", hashedPassword: "", role: "MERCHANT" }
            });
         }
-        await prisma.product.create({
+        dbProduct = await prisma.product.create({
           data: {
             id: mock.id,
             title: mock.name,
@@ -68,12 +68,15 @@ export async function addToCartAction(productId: string) {
             tier: mock.tier === "tier1" ? "TIER_1" : "TIER_2",
             expiresAt: new Date(mock.expiresAt),
             merchantId: merchant.id,
+            quantity: mock.quantity || 1,
           }
         });
       } else {
         return { error: "Product not found" };
       }
     }
+
+    const finalQuantity = Math.min(requestedQuantity, dbProduct.quantity);
 
     const existingItem = await prisma.cartItem.findFirst({
       where: { cartId: cart.id, productId },
@@ -82,11 +85,11 @@ export async function addToCartAction(productId: string) {
     if (existingItem) {
       await prisma.cartItem.update({
         where: { id: existingItem.id },
-        data: { quantity: existingItem.quantity + 1 },
+        data: { quantity: finalQuantity },
       });
     } else {
       await prisma.cartItem.create({
-        data: { cartId: cart.id, productId, quantity: 1 },
+        data: { cartId: cart.id, productId, quantity: finalQuantity },
       });
     }
 
