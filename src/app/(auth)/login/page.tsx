@@ -1,36 +1,31 @@
-import { Leaf, ShoppingBag } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { LoginForm } from "@/features/auth/components/LoginForm";
 
 export default function LoginPage() {
   return (
-    <div className="flex-grow flex flex-col items-center justify-center px-4 py-8 md:py-12 bg-[#F2EFE7]">
-      <div className="w-full max-w-md">
+    <div className="flex-grow flex flex-col items-center justify-center px-4 py-8 md:py-12 bg-[#F2EFE7] min-h-screen">
+      <div className="w-full max-w-md relative z-10">
         {/* Logo */}
-        <div className="flex flex-col items-center gap-3 mb-8">
-          <div className="relative">
-            <div
-              className="w-12 h-12 rounded-xl flex items-center justify-center"
-              style={{ backgroundColor: "#2F5D50" }}
-            >
-              <Leaf className="w-6 h-6 text-white" />
-            </div>
-            <div
-              className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center"
-              style={{ backgroundColor: "#D4A373" }}
-            >
-              <ShoppingBag className="w-2.5 h-2.5 text-white" />
-            </div>
+        <div className="flex flex-col items-center gap-4 mb-8">
+          <div className="relative w-28 h-28">
+            <Image 
+              src="/images/logo/Logo_Ecomatch_Baru-removebg-preview.png" 
+              alt="EcoMatch Logo" 
+              fill
+              className="object-contain"
+              priority
+            />
           </div>
-          <div className="text-center">
+          <div className="text-center mt-[-10px]">
             <h1
               className="text-2xl"
               style={{ color: "#1E293B", fontWeight: 800, letterSpacing: "-0.03em" }}
             >
               Welcome back to <span style={{ color: "#2F5D50" }}>EcoMatch</span>
             </h1>
-            <p className="text-sm mt-0.5" style={{ color: "#1E293B70" }}>
-              Sign in to claim food deals
+            <p className="text-sm font-medium mt-1" style={{ color: "#1E293B80" }}>
+              Sign in to rescue premium surplus
             </p>
           </div>
         </div>

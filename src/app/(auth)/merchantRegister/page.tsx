@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Store, Leaf, Zap, CheckCircle2 } from "lucide-react";
 import { MerchantRegisterForm } from "@/features/auth/components/MerchantRegisterForm";
 
@@ -21,12 +22,14 @@ export default function MerchantRegisterPage() {
         style={{ backgroundColor: "#1E293B" }}
       >
         {/* Logo */}
-        <div className="flex items-center gap-2.5">
-          <div
-            className="w-9 h-9 rounded-lg flex items-center justify-center"
-            style={{ backgroundColor: "#2F5D50" }}
-          >
-            <Store className="w-5 h-5 text-white" />
+        <div className="flex items-center gap-3">
+          <div className="relative w-12 h-12 bg-white rounded-xl p-1">
+            <Image 
+              src="/images/logo/Logo_Ecomatch_Baru-removebg-preview.png" 
+              alt="EcoMatch Logo" 
+              fill
+              className="object-contain p-1"
+            />
           </div>
           <span
             className="text-white"

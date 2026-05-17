@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Store, ShieldCheck, TrendingUp, Users } from "lucide-react";
 import { MerchantLoginForm } from "@/features/auth/components/MerchantLoginForm";
@@ -12,7 +13,7 @@ import { prisma } from "@/lib/prisma";
 
 export default async function MerchantLoginPage() {
   const merchantsCount = await prisma.user.count({ where: { role: "MERCHANT" } });
-  
+
   const rescuedAggregate = await prisma.orderItem.aggregate({
     _sum: { quantity: true },
     where: { order: { status: { in: ["PAID"] } } }
@@ -24,7 +25,7 @@ export default async function MerchantLoginPage() {
     where: { status: "PAID" }
   });
   const revenue = revenueAggregate._sum.grossAmount || 0;
-  
+
   // Format revenue to abbreviated string
   const formatRevenue = (amount: number) => {
     if (amount >= 1000000) return `Rp ${(amount / 1000000).toFixed(1)}M+`;
@@ -49,12 +50,14 @@ export default async function MerchantLoginPage() {
         style={{ backgroundColor: "#1E293B" }}
       >
         {/* Logo */}
-        <div className="flex items-center gap-2.5">
-          <div
-            className="w-9 h-9 rounded-lg flex items-center justify-center"
-            style={{ backgroundColor: "#2F5D50" }}
-          >
-            <Store className="w-5 h-5 text-white" />
+        <div className="flex items-center gap-3">
+          <div className="relative w-12 h-12 bg-white rounded-xl p-1">
+            <Image
+              src="/images/logo/Logo_Ecomatch_Baru-removebg-preview.png"
+              alt="EcoMatch Logo"
+              fill
+              className="object-contain p-1"
+            />
           </div>
           <span
             className="text-white"
@@ -80,7 +83,7 @@ export default async function MerchantLoginPage() {
             </p>
             <p className="mt-4 text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.55)" }}>
               EcoMatch connects sustainable food businesses with conscious local buyers. List your
-              surplus in minutes — our Gemini AI sets the optimal price for you.
+              surplus in minutes, our Gemini AI sets the optimal price for you.
             </p>
           </div>
 
