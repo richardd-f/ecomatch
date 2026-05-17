@@ -36,8 +36,8 @@ export default auth((req) => {
     }
   }
 
-  // 3. Protect /cart and /checkout routes
-  if (nextUrl.pathname.startsWith("/cart") || nextUrl.pathname.startsWith("/checkout")) {
+  // 3. Protect /cart, /checkout, and /myItems routes
+  if (nextUrl.pathname.startsWith("/cart") || nextUrl.pathname.startsWith("/checkout") || nextUrl.pathname.startsWith("/myItems")) {
     if (!isLoggedIn) {
       return NextResponse.redirect(new URL("/login", nextUrl));
     }

@@ -2,9 +2,11 @@ import { prisma } from "@/lib/prisma";
 import { Product } from "@/types/product.types";
 import { ProductDetailClient } from "./ProductDetailClient";
 import Link from "next/link";
+import { auth } from "@/auth";
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ productId: string }> }) {
   const { productId } = await params;
+  const session = await auth();
 
   const dbProduct = await prisma.product.findUnique({
     where: { id: productId },
@@ -45,5 +47,5 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     unit: "pcs",
   };
 
-  return <ProductDetailClient product={product} />;
+  return <ProductDetailClient product={product} isLoggedIn={!!session?.user} />;
 }

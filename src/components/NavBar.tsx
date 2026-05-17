@@ -1,10 +1,36 @@
 'use client'
-import { ShoppingCart, Leaf, Menu, X, Store, LogOut, ShoppingBag, ChevronDown } from "lucide-react";
+import { ShoppingCart, Leaf, Menu, X, Store, LogOut, ShoppingBag, ChevronDown, Package } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { UserRole } from "../features/auth/type";
 import { logoutAction } from "../features/auth/actions/auth.actions";
+
+export const NAV_CONFIG = {
+  consumer: {
+    mainNav: [
+      { label: "Marketplace", href: "/" }
+    ],
+    dropdown: [
+      { label: "My Items", href: "/myItems", icon: "Package" }
+    ]
+  },
+  merchant: {
+    mainNav: [
+      { label: "Marketplace", href: "/" },
+      { label: "Dashboard", href: "/merchant" }
+    ],
+    dropdown: [
+      { label: "Dashboard", href: "/merchant", icon: "Store" }
+    ]
+  }
+};
+
+const IconMap = {
+  Store,
+  Package,
+  ShoppingBag,
+};
 
 interface NavbarProps {
   cartCount?: number;
@@ -24,12 +50,8 @@ export function Navbar({ cartCount = 0, userName, userRole, businessName, onLogo
 
   const isActive = (href: string) => pathname === href;
 
-  const consumerLinks = [{ label: "Marketplace", href: "/" }];
-  const merchantLinks = [
-    { label: "Marketplace", href: "/" },
-    { label: "Dashboard", href: "/merchant" },
-  ];
-  const navLinks = isMerchant ? merchantLinks : consumerLinks;
+  const activeConfig = isMerchant ? NAV_CONFIG.merchant : NAV_CONFIG.consumer;
+  const navLinks = activeConfig.mainNav;
 
   const handleLogout = async () => {
     if (onLogout) {
@@ -149,17 +171,21 @@ export function Navbar({ cartCount = 0, userName, userRole, businessName, onLogo
                         {isMerchant ? "Merchant account" : "Shopper account"}
                       </p>
                     </div>
-                    {isMerchant && (
-                      <Link
-                        href="/merchant"
-                        onClick={() => setAccountOpen(false)}
-                        className="flex items-center gap-2 px-3 py-2.5 text-xs transition-colors hover:bg-white/10"
-                        style={{ color: "rgba(255,255,255,0.7)" }}
-                      >
-                        <Store className="w-3.5 h-3.5" />
-                        Dashboard
-                      </Link>
-                    )}
+                    {activeConfig.dropdown.map((item) => {
+                      const Icon = IconMap[item.icon as keyof typeof IconMap];
+                      return (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          onClick={() => setAccountOpen(false)}
+                          className="flex items-center gap-2 px-3 py-2.5 text-xs transition-colors hover:bg-white/10"
+                          style={{ color: "rgba(255,255,255,0.7)" }}
+                        >
+                          {Icon && <Icon className="w-3.5 h-3.5" />}
+                          {item.label}
+                        </Link>
+                      );
+                    })}
                     <button
                       onClick={() => { handleLogout(); setAccountOpen(false); }}
                       className="w-full flex items-center gap-2 px-3 py-2.5 text-xs transition-colors hover:bg-white/10"
@@ -240,6 +266,20 @@ export function Navbar({ cartCount = 0, userName, userRole, businessName, onLogo
                     </>
                   )}
                 </div>
+                {activeConfig.dropdown.map((item) => {
+                  const Icon = IconMap[item.icon as keyof typeof IconMap];
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setMenuOpen(false)}
+                      className="w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm text-white/70 hover:text-white transition-colors"
+                    >
+                      {Icon && <Icon className="w-4 h-4" />}
+                      {item.label}
+                    </Link>
+                  );
+                })}
                 <button
                   onClick={() => { handleLogout(); setMenuOpen(false); }}
                   className="w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm text-white/70 hover:text-white transition-colors"

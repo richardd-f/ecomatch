@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import {
   ArrowLeft,
   ShoppingCart,
@@ -33,7 +32,7 @@ function timeUntil(iso: string): string {
   return `${m} minutes`;
 }
 
-export function ProductDetailClient({ product }: { product: Product }) {
+export function ProductDetailClient({ product, isLoggedIn }: { product: Product; isLoggedIn: boolean }) {
   const router = useRouter();
   const [qty, setQty] = useState(1);
   const [activeImg, setActiveImg] = useState(0);
@@ -46,10 +45,20 @@ export function ProductDetailClient({ product }: { product: Product }) {
   const savingsPct = product.originalPrice > 0 ? Math.round((savings / product.originalPrice) * 100) : 0;
 
   const handleAddToCart = async () => {
+    if (!isLoggedIn) {
+      router.push("/login");
+      return;
+    }
     setIsLoading(true);
     // Add multiple times based on qty
     for (let i = 0; i < qty; i++) {
-      await addToCartAction(product.id);
+      const res = await addToCartAction(product.id);
+      if (res && "error" in res && res.error) {
+        if (res.error === "Must be logged in to add to cart") {
+          router.push("/login");
+          return;
+        }
+      }
     }
     setIsLoading(false);
     setAdded(true);
