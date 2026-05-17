@@ -11,9 +11,9 @@ export const metadata = {
 };
 
 const STATS = [
-  { value: "14.73M", unit: "ton/yr", label: "Food waste in Indonesia", source: "UNEP, 2024" },
+  { value: "14.73M", unit: " ton/yr", label: "Food waste in Indonesia", source: "UNEP, 2024" },
   { value: "41.4%", unit: "", label: "Of all national waste is food", source: "KLHK, 2023" },
-  { value: "Rp 551T", unit: "/yr", label: "Economic loss from food waste", source: "Bappenas, 2021" },
+  { value: "Rp 551T", unit: " /yr", label: "Economic loss from food waste", source: "Bappenas, 2021" },
   { value: "7.29%", unit: "", label: "GHG emissions from food waste", source: "Bappenas, 2021" },
 ];
 
@@ -48,12 +48,6 @@ const HOW_IT_WORKS = [
   },
 ];
 
-const TEAM = [
-  { name: "Felix Richardo", role: "Fullstack & AI Integration" },
-  { name: "Aaron Hans Adisaputra", role: "Backend & Infrastructure" },
-  { name: "Clarice Harijanto", role: "Frontend & UX Design" },
-];
-
 const TECH = [
   { name: "Next.js 16", desc: "App Router + Server Actions" },
   { name: "Gemini Flash Vision", desc: "AI image classification" },
@@ -68,7 +62,7 @@ const TECH = [
 export default function AboutPage() {
   return (
     <div className="w-full flex flex-col gap-0">
-      {/* ── Hero ── */}
+      {/* Hero */}
       <section className="relative overflow-hidden bg-[#1E293B] px-6 py-20 md:px-16 md:py-28">
         {/* decorative blobs */}
         <div
@@ -151,7 +145,7 @@ export default function AboutPage() {
         </StaggerContainer>
       </section>
 
-      {/* ── How it works ── */}
+      {/* How it works */}
       <section className="bg-white px-6 py-16 md:px-16">
         <FadeIn delay={0.1} className="max-w-5xl mx-auto">
           <div className="flex flex-col gap-3 mb-12">
@@ -195,7 +189,7 @@ export default function AboutPage() {
         </StaggerContainer>
       </section>
 
-      {/* ── Two-tier model ── */}
+      {/* Two-tier model */}
       <section className="bg-[#1E293B] px-6 py-16 md:px-16">
         <FadeIn delay={0.1} className="max-w-5xl mx-auto flex flex-col gap-3 mb-10">
           <p className="text-xs font-bold tracking-widest uppercase text-[#A4B69A]">
@@ -217,7 +211,7 @@ export default function AboutPage() {
           <StaggerItem>
             <div className="rounded-2xl p-8 border border-[#D4A373]/30 bg-[#D4A373]/10 flex flex-col gap-4 h-full">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D4A373]/20 text-[#D4A373] text-xs font-bold w-fit">
-                🏷 Tier 1 — Discounted Food
+                Tier 1 — Discounted Food
               </span>
               <h3 className="text-xl font-extrabold text-white">For conscious consumers</h3>
               <p className="text-sm text-white/60 leading-relaxed">
@@ -235,7 +229,7 @@ export default function AboutPage() {
           <StaggerItem>
             <div className="rounded-2xl p-8 border border-[#A4B69A]/30 bg-[#A4B69A]/10 flex flex-col gap-4 h-full">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#A4B69A]/20 text-[#A4B69A] text-xs font-bold w-fit">
-                ✨ Tier 2 — Free Organic Waste
+                Tier 2 — Free Organic Waste
               </span>
               <h3 className="text-xl font-extrabold text-white">For urban farmers & eco-communities</h3>
               <p className="text-sm text-white/60 leading-relaxed">
@@ -251,7 +245,7 @@ export default function AboutPage() {
         </StaggerContainer>
       </section>
 
-      {/* ── Tech stack ── */}
+      {/* Tech stack */}
       <section className="bg-[#F2EFE7] px-6 py-16 md:px-16">
         <FadeIn delay={0.1} className="max-w-5xl mx-auto flex flex-col gap-3 mb-10">
           <p className="text-xs font-bold tracking-widest uppercase text-[#2F5D50]">
@@ -354,43 +348,7 @@ export default function AboutPage() {
         </FadeIn>
       </section>
 
-      {/* ── Team ── */}
-      <section className="bg-[#1E293B] px-6 py-16 md:px-16">
-        <FadeIn delay={0.1} className="max-w-5xl mx-auto flex flex-col gap-3 mb-10">
-          <p className="text-xs font-bold tracking-widest uppercase text-[#A4B69A]">
-            The team
-          </p>
-          <h2
-            className="text-3xl font-extrabold text-white"
-            style={{ letterSpacing: "-0.02em" }}
-          >
-            Kelompok LLM — TechSprint 2026
-          </h2>
-        </FadeIn>
-
-        <StaggerContainer
-          delay={0.2}
-          className="flex flex-wrap gap-4 max-w-5xl mx-auto"
-        >
-          {TEAM.map((member) => (
-            <StaggerItem key={member.name}>
-              <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-2xl px-5 py-4">
-                <img
-                  src={`https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=2F5D50&color=fff&size=48`}
-                  alt={member.name}
-                  className="w-10 h-10 rounded-full"
-                />
-                <div>
-                  <p className="text-sm font-bold text-white">{member.name}</p>
-                  <p className="text-xs text-white/50">{member.role}</p>
-                </div>
-              </div>
-            </StaggerItem>
-          ))}
-        </StaggerContainer>
-      </section>
-
-      {/* ── CTA ── */}
+      {/* CTA */}
       <section className="bg-[#2F5D50] px-6 py-16 md:px-16 text-center">
         <FadeIn delay={0.1} className="max-w-2xl mx-auto flex flex-col items-center gap-6">
           <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center">
