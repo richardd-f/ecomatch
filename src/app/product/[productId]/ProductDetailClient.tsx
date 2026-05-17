@@ -281,16 +281,18 @@ export function ProductDetailClient({ product, isLoggedIn }: { product: Product;
 
             <button
               onClick={handleAddToCart}
-              disabled={isLoading || added}
-              className="w-full py-4 rounded-xl text-white flex items-center justify-center gap-2 transition-all disabled:opacity-80"
+              disabled={isLoading || added || product.quantity <= 0 || product.status !== "AVAILABLE"}
+              className="w-full py-4 rounded-xl text-white flex items-center justify-center gap-2 transition-all disabled:opacity-80 disabled:cursor-not-allowed"
               style={{
-                backgroundColor: added ? "#A4B69A" : isFree ? "#A4B69A" : "#2F5D50",
+                backgroundColor: (product.quantity <= 0 || product.status !== "AVAILABLE" || added) ? "#A4B69A" : "#2F5D50",
                 fontWeight: 700,
                 fontSize: "0.9375rem",
                 transform: added ? "scale(0.98)" : "scale(1)",
               }}
             >
-              {added ? (
+              {(product.quantity <= 0 || product.status !== "AVAILABLE") ? (
+                <>Out of Stock</>
+              ) : added ? (
                 <>✓ Added to Cart</>
               ) : isFree ? (
                 <>

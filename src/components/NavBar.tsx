@@ -13,7 +13,7 @@ export const NAV_CONFIG = {
       { label: "About", href: "/about" }
     ],
     dropdown: [
-      { label: "My Items", href: "/myItems", icon: "Package" }
+      { label: "Orders", href: "/myItems", icon: "Package" }
     ]
   },
   merchant: {

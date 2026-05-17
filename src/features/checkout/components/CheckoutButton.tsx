@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { createCheckoutSessionAction } from "../actions/checkout.actions";
+import { createCheckoutSessionAction, finalizeCheckoutAction } from "../actions/checkout.actions";
 import { CreditCard, Loader2 } from "lucide-react";
 
 declare global {
@@ -47,15 +47,24 @@ export function CheckoutButton() {
       return;
     }
 
+    if (res.isFree) {
+      // Order was handled entirely on the server
+      router.push("/myItems?status=success");
+      return;
+    }
+
     if (res.snapToken) {
       window.snap.pay(res.snapToken, {
-        onSuccess: function (result: any) {
+        onSuccess: async function (result: any) {
           console.log("Success:", result);
-          router.push("/orders?status=success");
+          if (res.orderId) {
+            await finalizeCheckoutAction(res.orderId, result.transaction_id);
+          }
+          router.push("/myItems?status=success");
         },
         onPending: function (result: any) {
           console.log("Pending:", result);
-          router.push("/orders?status=pending");
+          router.push("/myItems?status=pending");
         },
         onError: function (result: any) {
           console.log("Error:", result);
