@@ -5,7 +5,12 @@ import { HomeClient } from "./HomeClient";
 export default async function Home() {
   // Fetch available products
   const dbProducts = await prisma.product.findMany({
-    where: { status: "AVAILABLE" },
+    where: { 
+      status: "AVAILABLE",
+      expiresAt: {
+        gt: new Date()
+      }
+    },
     include: {
       merchant: true,
       images: true,

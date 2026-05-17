@@ -24,7 +24,7 @@ export default async function RootLayout({
       <body className="antialiased min-h-screen w-full flex flex-col">
         <Navbar 
           userName={user?.name ?? undefined}
-          userRole={user?.role?.toLowerCase() as any}
+          userRole={user?.role?.toLowerCase() as "merchant" | "consumer" | undefined}
           businessName={user?.role === "MERCHANT" ? user.name ?? undefined : undefined}
         />
         <main className="flex-grow w-full flex flex-col">

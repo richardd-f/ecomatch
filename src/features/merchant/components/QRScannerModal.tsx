@@ -84,7 +84,7 @@ export function QRScannerModal({ isOpen, onClose }: QRScannerModalProps) {
                 }}
               />
               <p className="absolute bottom-4 left-0 right-0 text-center text-sm font-medium text-white drop-shadow-md z-10 px-4">
-                Point camera at the customer's QR Code
+                Point camera at the customer&apos;s QR Code
               </p>
             </div>
           ) : (

@@ -2,11 +2,13 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Plus, Search, Clock, Package, Image as ImageIcon, ScanLine } from "lucide-react";
 import { PriceBadge } from "@/components/PriceBadge";
 import { QRScannerModal } from "./QRScannerModal";
 import { FadeIn } from "@/components/animations/FadeIn";
 import { StaggerContainer } from "@/components/animations/StaggerContainer";
+import { ImpactWidget } from "./ImpactWidget";
 import { StaggerItem } from "@/components/animations/StaggerItem";
 
 // Defining the expected product type from the server
@@ -69,6 +71,11 @@ export function MerchantDashboard({ initialProducts }: { initialProducts: Mercha
       </FadeIn>
 
       <QRScannerModal isOpen={isScannerOpen} onClose={() => setIsScannerOpen(false)} />
+
+      {/* Sustainability Impact Widget */}
+      <FadeIn delay={0.15}>
+        <ImpactWidget />
+      </FadeIn>
 
       {/* Filters and Search */}
       <FadeIn delay={0.2}>
@@ -136,10 +143,11 @@ export function MerchantDashboard({ initialProducts }: { initialProducts: Mercha
                 {/* Image Section */}
                 <div className="relative aspect-video bg-[#F2EFE7] overflow-hidden">
                   {primaryImage ? (
-                    <img 
+                    <Image 
                       src={primaryImage} 
                       alt={product.title} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center text-[#1E293B]/20">

@@ -78,242 +78,242 @@ export function ProductDetailClient({ product, isLoggedIn }: { product: Product;
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Image gallery */}
         <FadeIn delay={0.1}>
-        <div className="flex flex-col gap-3">
-          <div className="relative rounded-2xl overflow-hidden aspect-[4/3] bg-gray-100">
-            {allImages[activeImg] ? (
-              <img
-                src={allImages[activeImg]}
-                alt={product.name}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-[#1E293B]/40">
-                No image available
+          <div className="flex flex-col gap-3">
+            <div className="relative rounded-2xl overflow-hidden aspect-[4/3] bg-gray-100">
+              {allImages[activeImg] ? (
+                <img
+                  src={allImages[activeImg]}
+                  alt={product.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-[#1E293B]/40">
+                  No image available
+                </div>
+              )}
+              {/* Tier badge */}
+              <div className="absolute top-3 left-3">
+                <span
+                  className="px-3 py-1 rounded-full text-white text-xs"
+                  style={{
+                    backgroundColor: isFree ? "#A4B69A" : "#D4A373",
+                    fontWeight: 700,
+                  }}
+                >
+                  {isFree ? "✨ FREE CLAIM" : `🏷 SAVE ${savingsPct}%`}
+                </span>
+              </div>
+              {/* Nav arrows */}
+              {allImages.length > 1 && (
+                <>
+                  <button
+                    onClick={() => setActiveImg((v) => (v - 1 + allImages.length) % allImages.length)}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center bg-white/80 backdrop-blur-sm shadow transition-opacity hover:opacity-90"
+                  >
+                    <ChevronLeft className="w-4 h-4" style={{ color: "#1E293B" }} />
+                  </button>
+                  <button
+                    onClick={() => setActiveImg((v) => (v + 1) % allImages.length)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center bg-white/80 backdrop-blur-sm shadow transition-opacity hover:opacity-90"
+                  >
+                    <ChevronRight className="w-4 h-4" style={{ color: "#1E293B" }} />
+                  </button>
+                </>
+              )}
+            </div>
+            {/* Thumbnails */}
+            {allImages.length > 1 && (
+              <div className="flex gap-2">
+                {allImages.map((img, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setActiveImg(i)}
+                    className="w-16 h-16 rounded-lg overflow-hidden border-2 transition-all flex-shrink-0"
+                    style={{ borderColor: activeImg === i ? "#2F5D50" : "transparent" }}
+                  >
+                    <img src={img} alt="" className="w-full h-full object-cover" />
+                  </button>
+                ))}
               </div>
             )}
-            {/* Tier badge */}
-            <div className="absolute top-3 left-3">
-              <span
-                className="px-3 py-1 rounded-full text-white text-xs"
-                style={{
-                  backgroundColor: isFree ? "#A4B69A" : "#D4A373",
-                  fontWeight: 700,
-                }}
-              >
-                {isFree ? "✨ FREE CLAIM" : `🏷 SAVE ${savingsPct}%`}
-              </span>
-            </div>
-            {/* Nav arrows */}
-            {allImages.length > 1 && (
-              <>
-                <button
-                  onClick={() => setActiveImg((v) => (v - 1 + allImages.length) % allImages.length)}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center bg-white/80 backdrop-blur-sm shadow transition-opacity hover:opacity-90"
-                >
-                  <ChevronLeft className="w-4 h-4" style={{ color: "#1E293B" }} />
-                </button>
-                <button
-                  onClick={() => setActiveImg((v) => (v + 1) % allImages.length)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center bg-white/80 backdrop-blur-sm shadow transition-opacity hover:opacity-90"
-                >
-                  <ChevronRight className="w-4 h-4" style={{ color: "#1E293B" }} />
-                </button>
-              </>
-            )}
           </div>
-          {/* Thumbnails */}
-          {allImages.length > 1 && (
-            <div className="flex gap-2">
-              {allImages.map((img, i) => (
-                <button
-                  key={i}
-                  onClick={() => setActiveImg(i)}
-                  className="w-16 h-16 rounded-lg overflow-hidden border-2 transition-all flex-shrink-0"
-                  style={{ borderColor: activeImg === i ? "#2F5D50" : "transparent" }}
-                >
-                  <img src={img} alt="" className="w-full h-full object-cover" />
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
         </FadeIn>
 
         {/* Details */}
         <FadeIn delay={0.2}>
-        <div className="flex flex-col gap-5">
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <Store className="w-3.5 h-3.5" style={{ color: "#2F5D50" }} />
-              <span className="text-xs" style={{ color: "#2F5D50", fontWeight: 600 }}>
-                {product.merchantName}
-              </span>
-              <span
-                className="text-xs px-2 py-0.5 rounded-full"
-                style={{ backgroundColor: "#F2EFE7", color: "#1E293B70" }}
-              >
-                {product.category}
-              </span>
-            </div>
-            <h1
-              className="leading-tight"
-              style={{ color: "#1E293B", fontWeight: 800, fontSize: "1.5rem", letterSpacing: "-0.02em" }}
-            >
-              {product.name}
-            </h1>
-          </div>
-
-          {/* Price */}
-          <PriceBadge
-            tier={product.tier}
-            originalPrice={product.originalPrice}
-            discountedPrice={product.discountedPrice}
-            size="lg"
-          />
-
-          {/* AI Score badge */}
-          <div
-            className="flex items-center gap-3 p-3 rounded-xl"
-            style={{ backgroundColor: "#F2EFE7" }}
-          >
-            <div
-              className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
-              style={{ backgroundColor: "#2F5D50" }}
-            >
-              <Leaf className="w-5 h-5 text-white" />
-            </div>
+          <div className="flex flex-col gap-5">
             <div>
-              <p className="text-xs" style={{ color: "#1E293B80" }}>
-                Gemini Vision AI Freshness Score
-              </p>
-              <div className="flex items-center gap-2 mt-0.5">
-                <div className="flex gap-0.5">
-                  {Array.from({ length: 10 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="w-3 h-1.5 rounded-full"
-                      style={{
-                        backgroundColor:
-                          i < Math.round((product.aiScore || 0) / 10)
-                            ? i < 4
-                              ? "#D4A373"
-                              : "#2F5D50"
-                            : "#1E293B15",
-                      }}
-                    />
-                  ))}
-                </div>
-                <span className="text-xs" style={{ color: "#1E293B", fontWeight: 700 }}>
-                  {product.aiScore}/100
+              <div className="flex items-center gap-2 mb-2">
+                <Store className="w-3.5 h-3.5" style={{ color: "#2F5D50" }} />
+                <span className="text-xs" style={{ color: "#2F5D50", fontWeight: 600 }}>
+                  {product.merchantName}
                 </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Expiry */}
-          <div
-            className="flex items-center gap-2 px-3 py-2 rounded-lg"
-            style={{ backgroundColor: "#D4A37315", border: "1px solid #D4A37330" }}
-          >
-            <Clock className="w-4 h-4 flex-shrink-0" style={{ color: "#D4A373" }} />
-            <span className="text-sm" style={{ color: "#D4A373", fontWeight: 600 }}>
-              Available for {timeUntil(product.expiresAt)} — claim before it expires!
-            </span>
-          </div>
-
-          {/* Description */}
-          <div>
-            <h3 className="text-sm mb-2" style={{ color: "#1E293B", fontWeight: 700 }}>
-              About this listing
-            </h3>
-            <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: "#1E293B80" }}>
-              {product.fullDescription}
-            </p>
-          </div>
-
-          {/* Quantity + CTA */}
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-3">
-              <span className="text-sm" style={{ color: "#1E293B", fontWeight: 500 }}>
-                Quantity
-              </span>
-              <div
-                className="flex items-center gap-2 px-2 py-1 rounded-lg border"
-                style={{ borderColor: "#1E293B20" }}
-              >
-                <button
-                  onClick={() => setQty((v) => Math.max(1, v - 1))}
-                  className="w-7 h-7 rounded-md flex items-center justify-center transition-colors hover:bg-gray-100"
-                >
-                  <Minus className="w-3.5 h-3.5" style={{ color: "#1E293B" }} />
-                </button>
                 <span
-                  className="w-6 text-center text-sm"
-                  style={{ color: "#1E293B", fontWeight: 600 }}
+                  className="text-xs px-2 py-0.5 rounded-full"
+                  style={{ backgroundColor: "#F2EFE7", color: "#1E293B70" }}
                 >
-                  {qty}
+                  {product.category}
                 </span>
-                <button
-                  onClick={() => setQty((v) => Math.min(product.quantity, v + 1))}
-                  className="w-7 h-7 rounded-md flex items-center justify-center transition-colors hover:bg-gray-100"
-                >
-                  <Plus className="w-3.5 h-3.5" style={{ color: "#1E293B" }} />
-                </button>
               </div>
-              <span className="text-xs" style={{ color: "#1E293B50" }}>
-                {product.quantity} {product.unit} available
+              <h1
+                className="leading-tight"
+                style={{ color: "#1E293B", fontWeight: 800, fontSize: "1.5rem", letterSpacing: "-0.02em" }}
+              >
+                {product.name}
+              </h1>
+            </div>
+
+            {/* Price */}
+            <PriceBadge
+              tier={product.tier}
+              originalPrice={product.originalPrice}
+              discountedPrice={product.discountedPrice}
+              size="lg"
+            />
+
+            {/* AI Score badge */}
+            <div
+              className="flex items-center gap-3 p-3 rounded-xl"
+              style={{ backgroundColor: "#F2EFE7" }}
+            >
+              <div
+                className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
+                style={{ backgroundColor: "#2F5D50" }}
+              >
+                <Leaf className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <p className="text-xs" style={{ color: "#1E293B80" }}>
+                  Gemini Vision AI Freshness Score
+                </p>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <div className="flex gap-0.5">
+                    {Array.from({ length: 10 }).map((_, i) => (
+                      <div
+                        key={i}
+                        className="w-3 h-1.5 rounded-full"
+                        style={{
+                          backgroundColor:
+                            i < Math.round((product.aiScore || 0) / 10)
+                              ? i < 4
+                                ? "#D4A373"
+                                : "#2F5D50"
+                              : "#1E293B15",
+                        }}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-xs" style={{ color: "#1E293B", fontWeight: 700 }}>
+                    {product.aiScore}/100
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Expiry */}
+            <div
+              className="flex items-center gap-2 px-3 py-2 rounded-lg"
+              style={{ backgroundColor: "#D4A37315", border: "1px solid #D4A37330" }}
+            >
+              <Clock className="w-4 h-4 flex-shrink-0" style={{ color: "#D4A373" }} />
+              <span className="text-sm" style={{ color: "#D4A373", fontWeight: 600 }}>
+                Available for {timeUntil(product.expiresAt)}, claim before it expires!
               </span>
             </div>
 
-            {!isFree && qty > 1 && (
-              <p className="text-xs" style={{ color: "#D4A373", fontWeight: 500 }}>
-                Subtotal: {IDR(product.discountedPrice * qty)}
+            {/* Description */}
+            <div>
+              <h3 className="text-sm mb-2" style={{ color: "#1E293B", fontWeight: 700 }}>
+                About this listing
+              </h3>
+              <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: "#1E293B80" }}>
+                {product.fullDescription}
               </p>
-            )}
+            </div>
 
-            <button
-              onClick={handleAddToCart}
-              disabled={isLoading || added}
-              className="w-full py-4 rounded-xl text-white flex items-center justify-center gap-2 transition-all disabled:opacity-80"
-              style={{
-                backgroundColor: added ? "#A4B69A" : isFree ? "#A4B69A" : "#2F5D50",
-                fontWeight: 700,
-                fontSize: "0.9375rem",
-                transform: added ? "scale(0.98)" : "scale(1)",
-              }}
-            >
-              {added ? (
-                <>✓ Added to Cart</>
-              ) : isFree ? (
-                <>
-                  <Gift className="w-5 h-5" /> Claim for Free
-                </>
-              ) : (
-                <>
-                  <ShoppingCart className="w-5 h-5" /> Add to Cart
-                </>
-              )}
-            </button>
-
-            {isFree && (
-              <p className="text-xs text-center" style={{ color: "#1E293B60" }}>
-                This item is completely free — just pick it up from the merchant.
-              </p>
-            )}
-
-            {!isFree && savings > 0 && (
-              <div
-                className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm"
-                style={{ backgroundColor: "#2F5D5015", border: "1px solid #2F5D5020" }}
-              >
-                <Zap className="w-4 h-4" style={{ color: "#2F5D50" }} />
-                <span style={{ color: "#2F5D50", fontWeight: 500 }}>
-                  You save {IDR(savings * qty)} ({savingsPct}% off) vs. original price
+            {/* Quantity + CTA */}
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-3">
+                <span className="text-sm" style={{ color: "#1E293B", fontWeight: 500 }}>
+                  Quantity
+                </span>
+                <div
+                  className="flex items-center gap-2 px-2 py-1 rounded-lg border"
+                  style={{ borderColor: "#1E293B20" }}
+                >
+                  <button
+                    onClick={() => setQty((v) => Math.max(1, v - 1))}
+                    className="w-7 h-7 rounded-md flex items-center justify-center transition-colors hover:bg-gray-100"
+                  >
+                    <Minus className="w-3.5 h-3.5" style={{ color: "#1E293B" }} />
+                  </button>
+                  <span
+                    className="w-6 text-center text-sm"
+                    style={{ color: "#1E293B", fontWeight: 600 }}
+                  >
+                    {qty}
+                  </span>
+                  <button
+                    onClick={() => setQty((v) => Math.min(product.quantity, v + 1))}
+                    className="w-7 h-7 rounded-md flex items-center justify-center transition-colors hover:bg-gray-100"
+                  >
+                    <Plus className="w-3.5 h-3.5" style={{ color: "#1E293B" }} />
+                  </button>
+                </div>
+                <span className="text-xs" style={{ color: "#1E293B50" }}>
+                  {product.quantity} {product.unit} available
                 </span>
               </div>
-            )}
+
+              {!isFree && qty > 1 && (
+                <p className="text-xs" style={{ color: "#D4A373", fontWeight: 500 }}>
+                  Subtotal: {IDR(product.discountedPrice * qty)}
+                </p>
+              )}
+
+              <button
+                onClick={handleAddToCart}
+                disabled={isLoading || added}
+                className="w-full py-4 rounded-xl text-white flex items-center justify-center gap-2 transition-all disabled:opacity-80"
+                style={{
+                  backgroundColor: added ? "#A4B69A" : isFree ? "#A4B69A" : "#2F5D50",
+                  fontWeight: 700,
+                  fontSize: "0.9375rem",
+                  transform: added ? "scale(0.98)" : "scale(1)",
+                }}
+              >
+                {added ? (
+                  <>✓ Added to Cart</>
+                ) : isFree ? (
+                  <>
+                    <Gift className="w-5 h-5" /> Claim for Free
+                  </>
+                ) : (
+                  <>
+                    <ShoppingCart className="w-5 h-5" /> Add to Cart
+                  </>
+                )}
+              </button>
+
+              {isFree && (
+                <p className="text-xs text-center" style={{ color: "#1E293B60" }}>
+                  This item is completely free, just pick it up from the merchant.
+                </p>
+              )}
+
+              {!isFree && savings > 0 && (
+                <div
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm"
+                  style={{ backgroundColor: "#2F5D5015", border: "1px solid #2F5D5020" }}
+                >
+                  <Zap className="w-4 h-4" style={{ color: "#2F5D50" }} />
+                  <span style={{ color: "#2F5D50", fontWeight: 500 }}>
+                    You save {IDR(savings * qty)} ({savingsPct}% off) vs. original price
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
         </FadeIn>
       </div>
     </div>

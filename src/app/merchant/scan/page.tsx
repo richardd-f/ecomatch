@@ -30,7 +30,7 @@ export default async function MerchantScanPage() {
         <div className="text-center">
           <h1 className="text-2xl font-extrabold text-[#1E293B]">Handover Scanner</h1>
           <p className="text-sm text-[#1E293B]/60 mt-1 max-w-xs mx-auto">
-            Process physical handover of organic waste by scanning the buyer's unique QR code.
+            Process physical handover of organic waste by scanning the buyer&apos;s unique QR code.
           </p>
         </div>
       </div>

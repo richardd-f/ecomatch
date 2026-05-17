@@ -56,7 +56,7 @@ export default async function MyItemsPage() {
           </div>
           <h2 className="text-xl font-bold text-[#1E293B] mb-2">No items yet</h2>
           <p className="text-[#1E293B]/60 mb-6 max-w-sm">
-            You haven't rescued any food yet. Explore the marketplace to find delicious deals and fight food waste!
+            You haven&apos;t rescued any food yet. Explore the marketplace to find delicious deals and fight food waste!
           </p>
           <Link
             href="/catalog"
@@ -70,6 +70,7 @@ export default async function MyItemsPage() {
         <StaggerContainer delay={0.2} className="grid grid-cols-1 gap-6">
           {orders.map((order) => (
             <StaggerItem key={order.id}>
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
               <OrderCard order={order as any} />
             </StaggerItem>
           ))}

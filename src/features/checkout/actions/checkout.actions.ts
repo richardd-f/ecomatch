@@ -46,7 +46,7 @@ export async function createCheckoutSessionAction() {
 
   try {
     // 4. Create Order in Database
-    const order = await prisma.order.create({
+    await prisma.order.create({
       data: {
         id: orderId,
         userId: userId,
@@ -85,8 +85,8 @@ export async function createCheckoutSessionAction() {
     });
 
     return { success: true, snapToken };
-  } catch (error: any) {
-    console.error("Checkout Error:", error.message || error);
+  } catch (error: unknown) {
+    console.error("Checkout Error:", error instanceof Error ? error.message : error);
     return { error: "Failed to initialize checkout session." };
   }
 }
