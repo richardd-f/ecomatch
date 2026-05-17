@@ -127,5 +127,5 @@ export async function merchantLoginAction(data: MerchantLoginFormData) {
   }
 }
 export async function logoutAction() {
-  await signOut();
+  await signOut({ redirectTo: "/" });
 }

@@ -129,8 +129,9 @@ export function MerchantDashboard({ initialProducts }: { initialProducts: Mercha
 
             return (
               <StaggerItem key={product.id} className="h-full">
-              <div 
-                className="h-full group flex flex-col bg-white rounded-2xl border border-[#1E293B]/10 overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+              <Link 
+                href={`/merchant/products/${product.id}`}
+                className="h-full group flex flex-col bg-white rounded-2xl border border-[#1E293B]/10 overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer block"
               >
                 {/* Image Section */}
                 <div className="relative aspect-video bg-[#F2EFE7] overflow-hidden">
@@ -181,7 +182,7 @@ export function MerchantDashboard({ initialProducts }: { initialProducts: Mercha
                     </span>
                   </div>
                 </div>
-              </div>
+              </Link>
               </StaggerItem>
             );
           })}
