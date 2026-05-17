@@ -4,8 +4,11 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /app
 
 COPY package.json pnpm-lock.yaml ./
-RUN --mount=type=cache,id=pnpm-v2,target=/pnpm/store \
-    pnpm config set store-dir /pnpm/store && \
+# RUN --mount=type=cache,id=pnpm-v2,target=/pnpm/store \
+#     pnpm config set store-dir /pnpm/store && \
+#     pnpm i --frozen-lockfile
+
+RUN pnpm config set store-dir /pnpm/store && \
     pnpm i --frozen-lockfile
 
 COPY . .
