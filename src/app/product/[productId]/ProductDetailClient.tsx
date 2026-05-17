@@ -18,6 +18,7 @@ import {
 import { PriceBadge } from "@/components/PriceBadge";
 import { Product } from "@/types/product.types";
 import { addToCartAction } from "@/features/cart/actions/cart.actions";
+import { FadeIn } from "@/components/animations/FadeIn";
 
 const IDR = (n: number) =>
   new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(n);
@@ -79,6 +80,7 @@ export function ProductDetailClient({ product, isLoggedIn }: { product: Product;
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Image gallery */}
+        <FadeIn delay={0.1}>
         <div className="flex flex-col gap-3">
           <div className="relative rounded-2xl overflow-hidden aspect-[4/3] bg-gray-100">
             {allImages[activeImg] ? (
@@ -138,8 +140,10 @@ export function ProductDetailClient({ product, isLoggedIn }: { product: Product;
             </div>
           )}
         </div>
+        </FadeIn>
 
         {/* Details */}
+        <FadeIn delay={0.2}>
         <div className="flex flex-col gap-5">
           <div>
             <div className="flex items-center gap-2 mb-2">
@@ -313,6 +317,7 @@ export function ProductDetailClient({ product, isLoggedIn }: { product: Product;
             )}
           </div>
         </div>
+        </FadeIn>
       </div>
     </div>
   );

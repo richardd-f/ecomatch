@@ -5,6 +5,9 @@ import Link from "next/link";
 import { Plus, Search, Clock, Package, Image as ImageIcon, ScanLine } from "lucide-react";
 import { PriceBadge } from "@/components/PriceBadge";
 import { QRScannerModal } from "./QRScannerModal";
+import { FadeIn } from "@/components/animations/FadeIn";
+import { StaggerContainer } from "@/components/animations/StaggerContainer";
+import { StaggerItem } from "@/components/animations/StaggerItem";
 
 // Defining the expected product type from the server
 export type MerchantProduct = {
@@ -34,6 +37,7 @@ export function MerchantDashboard({ initialProducts }: { initialProducts: Mercha
   return (
     <div className="flex flex-col gap-6">
       {/* Header section */}
+      <FadeIn delay={0.1}>
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl md:text-3xl font-extrabold text-[#1E293B] tracking-tight">
@@ -62,10 +66,12 @@ export function MerchantDashboard({ initialProducts }: { initialProducts: Mercha
           </Link>
         </div>
       </div>
+      </FadeIn>
 
       <QRScannerModal isOpen={isScannerOpen} onClose={() => setIsScannerOpen(false)} />
 
       {/* Filters and Search */}
+      <FadeIn delay={0.2}>
       <div className="flex flex-col md:flex-row gap-4 bg-white p-4 rounded-2xl border border-[#1E293B]/10 shadow-sm">
         {/* Search */}
         <div className="relative flex-grow">
@@ -111,19 +117,20 @@ export function MerchantDashboard({ initialProducts }: { initialProducts: Mercha
           <option value="CLAIMED">Claimed</option>
         </select>
       </div>
+      </FadeIn>
 
       {/* Product Grid */}
       {filteredProducts.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <StaggerContainer delay={0.3} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredProducts.map((product) => {
             // Find primary image or use fallback
             const primaryImage = product.images.find(img => img.isPrimary)?.imgUrl 
               || product.images[0]?.imgUrl;
 
             return (
+              <StaggerItem key={product.id} className="h-full">
               <div 
-                key={product.id}
-                className="group flex flex-col bg-white rounded-2xl border border-[#1E293B]/10 overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                className="h-full group flex flex-col bg-white rounded-2xl border border-[#1E293B]/10 overflow-hidden shadow-sm hover:shadow-md transition-shadow"
               >
                 {/* Image Section */}
                 <div className="relative aspect-video bg-[#F2EFE7] overflow-hidden">
@@ -175,11 +182,13 @@ export function MerchantDashboard({ initialProducts }: { initialProducts: Mercha
                   </div>
                 </div>
               </div>
+              </StaggerItem>
             );
           })}
-        </div>
+        </StaggerContainer>
       ) : (
         /* Empty State */
+        <FadeIn delay={0.3}>
         <div className="flex flex-col items-center justify-center py-24 px-4 text-center bg-white rounded-2xl border border-dashed border-[#1E293B]/20">
           <div className="w-16 h-16 rounded-full flex items-center justify-center bg-[#F2EFE7] text-[#A4B69A] mb-4">
             <Package className="w-8 h-8" />
@@ -199,6 +208,7 @@ export function MerchantDashboard({ initialProducts }: { initialProducts: Mercha
             </Link>
           )}
         </div>
+        </FadeIn>
       )}
     </div>
   );

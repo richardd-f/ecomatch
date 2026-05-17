@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Product } from "../types/product.types";
 import { PriceBadge } from "./PriceBadge";
+import { StaggerContainer } from "./animations/StaggerContainer";
+import { StaggerItem } from "./animations/StaggerItem";
 
 interface ProductGridProps {
   products: Product[];
@@ -17,12 +19,12 @@ export function ProductGrid({ products, onAddToCart }: ProductGridProps) {
   }
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+    <StaggerContainer delay={0.4} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
       {products.map((product) => (
-        <Link
-          key={product.id}
-          href={`/product/${product.id}`}
-          className="group flex flex-col rounded-2xl overflow-hidden border transition-all hover:shadow-md"
+        <StaggerItem key={product.id} className="h-full">
+          <Link
+            href={`/product/${product.id}`}
+            className="group flex flex-col h-full rounded-2xl overflow-hidden border transition-all hover:shadow-md"
           style={{ backgroundColor: "white", borderColor: "#1E293B15" }}
         >
           <div className="relative aspect-square overflow-hidden bg-gray-100">
@@ -61,7 +63,8 @@ export function ProductGrid({ products, onAddToCart }: ProductGridProps) {
             </div>
           </div>
         </Link>
+        </StaggerItem>
       ))}
-    </div>
+    </StaggerContainer>
   );
 }

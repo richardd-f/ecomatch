@@ -5,6 +5,9 @@ import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
 import { updateCartItemQuantityAction, removeCartItemAction } from "../actions/cart.actions";
 import Link from "next/link";
 import { PriceBadge } from "@/components/PriceBadge";
+import { FadeIn } from "@/components/animations/FadeIn";
+import { StaggerContainer } from "@/components/animations/StaggerContainer";
+import { StaggerItem } from "@/components/animations/StaggerItem";
 
 // Define local types matching what Prisma returns
 type CartItemWithProduct = {
@@ -28,6 +31,7 @@ export function CartList({ initialItems }: { initialItems: CartItemWithProduct[]
 
   if (items.length === 0) {
     return (
+      <FadeIn delay={0.1}>
       <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
         <div className="w-16 h-16 rounded-full flex items-center justify-center bg-[#F2EFE7] text-[#A4B69A] mb-4">
           <ShoppingBag className="w-8 h-8" />
@@ -43,6 +47,7 @@ export function CartList({ initialItems }: { initialItems: CartItemWithProduct[]
           Browse Marketplace
         </Link>
       </div>
+      </FadeIn>
     );
   }
 
@@ -88,10 +93,10 @@ export function CartList({ initialItems }: { initialItems: CartItemWithProduct[]
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-12">
       {/* Cart Items List */}
-      <div className="lg:col-span-2 flex flex-col gap-4">
+      <StaggerContainer delay={0.1} className="lg:col-span-2 flex flex-col gap-4">
         {items.map((item) => (
+          <StaggerItem key={item.id}>
           <div 
-            key={item.id} 
             className="flex flex-col sm:flex-row gap-4 p-4 rounded-2xl bg-white border border-[#1E293B]/10 shadow-sm"
           >
             {/* Image Placeholder */}
@@ -159,11 +164,13 @@ export function CartList({ initialItems }: { initialItems: CartItemWithProduct[]
               </div>
             </div>
           </div>
+          </StaggerItem>
         ))}
-      </div>
+      </StaggerContainer>
 
       {/* Order Summary */}
       <div className="lg:col-span-1">
+        <FadeIn delay={0.3}>
         <div className="sticky top-24 bg-white rounded-2xl border border-[#1E293B]/10 p-6 shadow-sm">
           <h2 className="text-lg font-bold text-[#1E293B] mb-4">Order Summary</h2>
           
@@ -196,6 +203,7 @@ export function CartList({ initialItems }: { initialItems: CartItemWithProduct[]
             By proceeding, you agree to rescue this food. Please pick it up before the expiration time!
           </p>
         </div>
+        </FadeIn>
       </div>
     </div>
   );

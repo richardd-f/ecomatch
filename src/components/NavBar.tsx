@@ -221,9 +221,13 @@ export function Navbar({ cartCount = 0, userName, userRole, businessName, onLogo
       </div>
 
       {/* Mobile menu */}
-      {menuOpen && (
+      <div
+        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out origin-top ${
+          menuOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
         <div
-          className="md:hidden border-t px-4 py-3 flex flex-col gap-1"
+          className="border-t px-4 py-3 flex flex-col gap-1"
           style={{ backgroundColor: "#1E293B", borderColor: "#2F5D5040" }}
         >
           {navLinks.map((link) => (
@@ -292,7 +296,7 @@ export function Navbar({ cartCount = 0, userName, userRole, businessName, onLogo
                 <Link
                   href="/login"
                   onClick={() => setMenuOpen(false)}
-                  className="flex items-center gap-2 px-3 py-2.5 rounded-md text-sm text-white/70"
+                  className="flex items-center gap-2 px-3 py-2.5 rounded-md text-sm text-white/70 hover:text-white transition-colors"
                 >
                   <ShoppingBag className="w-4 h-4" />
                   Login
@@ -301,7 +305,7 @@ export function Navbar({ cartCount = 0, userName, userRole, businessName, onLogo
             )}
           </div>
         </div>
-      )}
+      </div>
     </nav>
   );
 }

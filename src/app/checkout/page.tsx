@@ -5,6 +5,7 @@ import { ShoppingBag, ArrowLeft, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { CheckoutButton } from "@/features/checkout/components/CheckoutButton";
 import { PriceBadge } from "@/components/PriceBadge";
+import { FadeIn } from "@/components/animations/FadeIn";
 
 export const metadata = {
   title: "Checkout | EcoMatch",
@@ -42,6 +43,7 @@ export default async function CheckoutPage() {
         Back to Cart
       </Link>
 
+      <FadeIn delay={0.1}>
       <div className="mb-8">
         <h1 className="text-2xl md:text-3xl font-extrabold text-[#1E293B] tracking-tight">
           Checkout
@@ -50,10 +52,11 @@ export default async function CheckoutPage() {
           Review your rescued items and complete your payment safely.
         </p>
       </div>
+      </FadeIn>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Left Column: Items */}
-        <div className="md:col-span-2 flex flex-col gap-4">
+        <FadeIn delay={0.2} className="md:col-span-2 flex flex-col gap-4">
           <div className="bg-white rounded-2xl border border-[#1E293B]/10 overflow-hidden shadow-sm">
             <div className="px-6 py-4 border-b border-[#1E293B]/10 bg-[#F2EFE7]/30">
               <h2 className="font-bold text-[#1E293B]">Order Items ({items.length})</h2>
@@ -89,10 +92,10 @@ export default async function CheckoutPage() {
               ))}
             </div>
           </div>
-        </div>
+        </FadeIn>
 
         {/* Right Column: Payment Summary */}
-        <div className="md:col-span-1">
+        <FadeIn delay={0.3} className="md:col-span-1">
           <div className="sticky top-24 bg-white rounded-2xl border border-[#1E293B]/10 p-6 shadow-sm">
             <h2 className="text-lg font-bold text-[#1E293B] mb-4">Payment Details</h2>
             
@@ -121,7 +124,7 @@ export default async function CheckoutPage() {
 
             <CheckoutButton />
           </div>
-        </div>
+        </FadeIn>
       </div>
     </div>
   );

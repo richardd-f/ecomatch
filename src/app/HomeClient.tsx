@@ -4,6 +4,10 @@ import { useState, useMemo } from "react";
 import { Search, SlidersHorizontal, Leaf, X } from "lucide-react";
 import { ProductGrid } from "@/components/ProductGrid";
 import { Product } from "@/types/product.types";
+import { FadeIn } from "@/components/animations/FadeIn";
+import { FloatingElement } from "@/components/animations/FloatingElement";
+import { StaggerContainer } from "@/components/animations/StaggerContainer";
+import { StaggerItem } from "@/components/animations/StaggerItem";
 
 const CATEGORIES = ["All", "Bakery", "Vegetables", "Prepared Meals"];
 
@@ -26,12 +30,15 @@ export function HomeClient({ products }: { products: Product[] }) {
   };
 
   return (
-    <div className="flex flex-col gap-8 w-full max-w-7xl mx-auto pb-12">
+    <div className="flex flex-col gap-8 w-full max-w-7xl mx-auto pb-12 px-4 md:px-8">
       {/* Hero Banner */}
-      <section className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-[#1E293B] to-[#2F5D50] px-6 py-10 md:px-12 md:py-16 shadow-lg">
+      <FadeIn delay={0.1} duration={0.8}>
+        <section className="relative overflow-hidden rounded-2xl md:rounded-3xl mt-3 bg-gradient-to-br from-[#1E293B] to-[#2F5D50] px-6 py-10 md:px-12 md:py-16 shadow-lg">
         <div className="relative z-10 flex flex-col gap-4">
           <div className="flex items-center gap-2">
-            <Leaf className="w-5 h-5 text-[#A4B69A]" />
+            <FloatingElement duration={2.5}>
+              <Leaf className="w-5 h-5 text-[#A4B69A]" />
+            </FloatingElement>
             <span className="text-sm font-semibold text-[#A4B69A] tracking-wide uppercase">
               AI-Powered Food Rescue
             </span>
@@ -47,27 +54,13 @@ export function HomeClient({ products }: { products: Product[] }) {
           </p>
 
           {/* Stats Row */}
-          <div className="flex flex-wrap gap-6 md:gap-10 mt-6 pt-6 border-t border-white/10">
-            {[
-              { label: "Items rescued today", value: "247" },
-              { label: "CO₂ avoided (kg)", value: "82" },
-              { label: "Active merchants", value: "63" },
-            ].map((stat) => (
-              <div key={stat.label} className="flex flex-col">
-                <span className="text-2xl md:text-3xl font-extrabold text-white">
-                  {stat.value}
-                </span>
-                <span className="text-xs md:text-sm font-medium text-white/60">
-                  {stat.label}
-                </span>
-              </div>
-            ))}
-          </div>
+          
         </div>
       </section>
+      </FadeIn>
 
       {/* Discovery Section (Search & Filters) */}
-      <section className="flex flex-col gap-4 sticky top-0 z-20 bg-[#F2EFE7]/90 backdrop-blur-md py-4 -mx-4 px-4 sm:mx-0 sm:px-0">
+      <section className="flex flex-col gap-4 sticky top-0 z-20 bg-[#F2EFE7]/90 backdrop-blur-md py-4 -mx-4 px-4 md:mx-0 md:px-0">
         
         {/* Search Bar */}
         <div className="relative w-full">
@@ -91,8 +84,8 @@ export function HomeClient({ products }: { products: Product[] }) {
         </div>
 
         {/* Filters Layout */}
-        <div className="flex items-center gap-3 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden">
-          <SlidersHorizontal className="w-5 h-5 shrink-0 text-[#1E293B]/50" />
+        <StaggerContainer delay={0.3} className="flex items-center gap-3 overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 [&::-webkit-scrollbar]:hidden">
+          <SlidersHorizontal className="w-5 h-5 shrink-0 text-[#1E293B]/50 stagger-item" />
           
           {/* Categories */}
           <div className="flex items-center gap-2">
@@ -100,7 +93,7 @@ export function HomeClient({ products }: { products: Product[] }) {
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                className={`stagger-item shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                   activeCategory === cat
                     ? "bg-[#2F5D50] text-white shadow-md border-transparent"
                     : "bg-white text-[#1E293B]/70 border border-[#1E293B]/10 hover:bg-[#1E293B]/5"
@@ -112,7 +105,7 @@ export function HomeClient({ products }: { products: Product[] }) {
           </div>
 
           {/* Divider */}
-          <div className="shrink-0 h-6 w-px bg-[#1E293B]/10 mx-2" />
+          <div className="stagger-item shrink-0 h-6 w-px bg-[#1E293B]/10 mx-2" />
 
           {/* Tier Filters */}
           <div className="flex items-center gap-2">
@@ -124,7 +117,7 @@ export function HomeClient({ products }: { products: Product[] }) {
               <button
                 key={tier.id}
                 onClick={() => setTierFilter(tier.id as any)}
-                className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border ${
+                className={`stagger-item shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border ${
                   tierFilter === tier.id
                     ? `${tier.activeClass} shadow-md border-transparent`
                     : "bg-white text-[#1E293B]/70 border-[#1E293B]/10 hover:bg-[#1E293B]/5"
@@ -134,7 +127,7 @@ export function HomeClient({ products }: { products: Product[] }) {
               </button>
             ))}
           </div>
-        </div>
+        </StaggerContainer>
       </section>
 
       {/* Results Header */}
