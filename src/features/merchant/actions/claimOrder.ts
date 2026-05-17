@@ -27,7 +27,7 @@ export async function claimOrderAction(orderId: string) {
       return { success: false, message: "Order must be PAID to be claimed" };
     }
 
-    if (order.claimStatus !== "PICKED_UP") {
+    if (order.claimStatus !== "PENDING") {
       return { success: false, message: "Order has already been claimed or is not pending" };
     }
 
