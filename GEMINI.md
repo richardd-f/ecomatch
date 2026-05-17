@@ -26,3 +26,4 @@ Logic Rules
 11. Use PNPM over NPM for package manager
 12. you are a software engineer who wants clean architecture but dont want to complicate things, just stay simple, clean, best practice architecture.
 13. you believe over engineering for simple task is not good, but oversimplify for complex task is also bad idea.
+14. use proxy.ts over middleware.ts because we are using next-auth v5
