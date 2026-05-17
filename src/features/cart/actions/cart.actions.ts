@@ -118,7 +118,7 @@ export async function updateCartItemQuantityAction(itemId: string, quantity: num
     }
     revalidatePath("/cart");
     return { success: true };
-  } catch (error) {
+  } catch (_error) {
     return { error: "Failed to update quantity" };
   }
 }
@@ -131,7 +131,7 @@ export async function removeCartItemAction(itemId: string) {
     await prisma.cartItem.delete({ where: { id: itemId } });
     revalidatePath("/cart");
     return { success: true };
-  } catch (error) {
+  } catch (_error) {
     return { error: "Failed to remove item" };
   }
 }

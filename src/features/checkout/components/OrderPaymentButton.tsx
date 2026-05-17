@@ -36,16 +36,19 @@ export function OrderPaymentButton({ snapToken }: OrderPaymentButtonProps) {
 
     if (window.snap) {
       window.snap.pay(snapToken, {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onSuccess: function (result: any) {
           console.log("Success:", result);
           router.refresh(); // Refresh the page to get the updated status (once webhook hits)
           setIsLoading(false);
         },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onPending: function (result: any) {
           console.log("Pending:", result);
           router.refresh();
           setIsLoading(false);
         },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onError: function (result: any) {
           console.log("Error:", result);
           alert("Payment failed!");

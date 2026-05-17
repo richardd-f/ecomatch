@@ -4,7 +4,7 @@ import { signIn, signOut } from "../../../auth";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { AuthError } from "next-auth";
-import { RegisterFormData, MerchantRegisterFormData, LoginFormData, MerchantLoginFormData } from "../type";
+import { RegisterFormData, MerchantRegisterFormData, LoginFormData, MerchantLoginFormData } from "../interfaces/auth.interface";
 
 export async function registerConsumerAction(data: RegisterFormData) {
   try {
@@ -18,7 +18,7 @@ export async function registerConsumerAction(data: RegisterFormData) {
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
-    const user = await prisma.user.create({
+    const _user = await prisma.user.create({
       data: {
         name: data.name,
         email: data.email,
@@ -60,7 +60,7 @@ export async function registerMerchantAction(data: MerchantRegisterFormData) {
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
-    const user = await prisma.user.create({
+    const _user = await prisma.user.create({
       data: {
         name: data.businessName,
         email: data.workEmail,

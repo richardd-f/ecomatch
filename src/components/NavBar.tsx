@@ -3,7 +3,7 @@ import { ShoppingCart, Leaf, Menu, X, Store, LogOut, ShoppingBag, ChevronDown, P
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { UserRole } from "../features/auth/type";
+import { UserRole } from "../features/auth/interfaces/auth.interface";
 import { logoutAction } from "../features/auth/actions/auth.actions";
 
 export const NAV_CONFIG = {
@@ -46,7 +46,6 @@ export function Navbar({ cartCount = 0, userName, userRole, businessName, onLogo
   const pathname = usePathname();
 
   const isMerchant = userRole === "merchant";
-  const isConsumer = userRole === "consumer";
 
   const isActive = (href: string) => pathname === href;
 

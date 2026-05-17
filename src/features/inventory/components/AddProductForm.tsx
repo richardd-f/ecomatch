@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { CldUploadWidget } from "next-cloudinary";
 import { createProductAction } from "../actions/inventory.actions";
 import { analyzeProductImageAction } from "../actions/ai.actions";
+import Image from "next/image";
 import { ImagePlus, X, Sparkles, Loader2 } from "lucide-react";
 
 type UploadedImage = { url: string; publicId: string };
@@ -104,7 +105,7 @@ export function AddProductForm() {
         <div className="flex flex-wrap gap-3">
           {images.map((img, i) => (
             <div key={img.publicId} className="relative w-24 h-24 rounded-xl overflow-hidden border-2 border-[#2F5D50]">
-              <img src={img.url} alt="" className="w-full h-full object-cover" />
+              <Image src={img.url} alt="" fill className="object-cover" />
               {i === 0 && (
                 <span className="absolute bottom-0 left-0 right-0 text-center text-[9px] font-bold bg-[#2F5D50] text-white py-0.5">
                   PRIMARY

@@ -7,6 +7,7 @@ import { CreditCard, Loader2 } from "lucide-react";
 
 declare global {
   interface Window {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     snap: any;
   }
 }
@@ -49,14 +50,17 @@ export function CheckoutButton() {
 
     if (res.snapToken) {
       window.snap.pay(res.snapToken, {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onSuccess: function (result: any) {
           console.log("Success:", result);
           router.push("/orders?status=success");
         },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onPending: function (result: any) {
           console.log("Pending:", result);
           router.push("/orders?status=pending");
         },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onError: function (result: any) {
           console.log("Error:", result);
           alert("Payment failed!");

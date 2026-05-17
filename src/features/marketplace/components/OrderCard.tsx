@@ -7,6 +7,7 @@ import { ShoppingBag, QrCode, Clock, CheckCircle2, XCircle, AlertCircle } from "
 import { format } from "date-fns";
 
 interface OrderCardProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   order: any; // We'll pass the Prisma order with items and products
 }
 
@@ -66,6 +67,7 @@ export function OrderCard({ order }: OrderCardProps) {
 
       {/* Items */}
       <div className="p-5 flex flex-col gap-4">
+        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         {order.items.map((item: any) => (
           <div key={item.id} className="flex items-start gap-4 pb-4 border-b border-[#1E293B]/5 last:border-0 last:pb-0">
             <div className="w-14 h-14 rounded-xl bg-[#F2EFE7] flex items-center justify-center shrink-0">

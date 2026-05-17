@@ -3,7 +3,8 @@ import { Product } from "../types/product.types";
 import { PriceBadge } from "./PriceBadge";
 import { StaggerContainer } from "./animations/StaggerContainer";
 import { StaggerItem } from "./animations/StaggerItem";
-import { ShoppingBag } from "lucide-react";
+import { ShoppingBag, MapPin } from "lucide-react";
+import { CountdownTimer } from "./CountdownTimer";
 
 interface ProductGridProps {
   products: Product[];
@@ -54,10 +55,21 @@ export function ProductGrid({ products, onAddToCart }: ProductGridProps) {
               <span className="text-[10px] uppercase truncate" style={{ color: "#2F5D50", fontWeight: 600 }}>
                 {product.merchantName}
               </span>
+              <CountdownTimer expiresAt={product.expiresAt} />
             </div>
             <h3 className="text-sm line-clamp-2" style={{ color: "#1E293B", fontWeight: 700, lineHeight: 1.3 }}>
               {product.name}
             </h3>
+            
+            {product.distanceKm !== undefined && (
+              <div className="flex items-center gap-1 mt-1 text-[11px] font-semibold text-[#A4B69A]">
+                <MapPin className="w-3 h-3" />
+                {product.distanceKm < 1 
+                  ? `${Math.round(product.distanceKm * 1000)} m away` 
+                  : `${product.distanceKm.toFixed(1)} km away`}
+              </div>
+            )}
+            
             <div className="mt-auto pt-2">
               <PriceBadge
                 tier={product.tier}

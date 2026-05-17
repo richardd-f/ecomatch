@@ -20,7 +20,7 @@ export default function NotFound() {
       </h1>
       
       <p className="text-base md:text-lg max-w-md mx-auto mb-8 text-[#1E293B]/80 leading-relaxed">
-        Oops! We couldn't find the page you're looking for. It might have been moved or deleted.
+        Oops! We couldn&apos;t find the page you&apos;re looking for. It might have been moved or deleted.
       </p>
 
       {/* Apply hover:-translate-y-1 for a tactile, physics-based button interaction */}

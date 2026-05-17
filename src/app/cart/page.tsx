@@ -16,6 +16,7 @@ export default async function CartPage() {
   }
 
   const cart = await getCartAction();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const items = (cart as any)?.items || [];
 
   return (

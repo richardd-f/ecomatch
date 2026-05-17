@@ -31,8 +31,10 @@ type CartItemWithProduct = {
   };
 };
 
+type CartItemExtended = CartItemWithProduct & { originalQty?: number };
+
 export function CartList({ initialItems }: { initialItems: CartItemWithProduct[] }) {
-  const [items, setItems] = useState(() => 
+  const [items, setItems] = useState<CartItemExtended[]>(() => 
     initialItems.map(item => {
       if (item.quantity > item.product.quantity) {
         return { ...item, originalQty: item.quantity, quantity: item.product.quantity };
@@ -43,16 +45,7 @@ export function CartList({ initialItems }: { initialItems: CartItemWithProduct[]
   
   const [isPending, startTransition] = useTransition();
 
-  // If we adjusted quantities, sync with backend
-  import("react").then(({ useEffect }) => {
-    useEffect(() => {
-      items.forEach(item => {
-        if ((item as any).originalQty) {
-          updateCartItemQuantityAction(item.id, item.quantity);
-        }
-      });
-    }, []);
-  });
+  // Note: quantity adjustments are synced via optimistic updates in handleUpdateQuantity
 
   if (items.length === 0) {
     return (
@@ -63,7 +56,7 @@ export function CartList({ initialItems }: { initialItems: CartItemWithProduct[]
         </div>
         <h2 className="text-xl font-bold text-[#1E293B] mb-2">Your cart is empty</h2>
         <p className="text-[#1E293B]/60 mb-6 max-w-sm">
-          You haven't rescued any food yet. Browse the marketplace to find delicious surplus food!
+          You haven&apos;t rescued any food yet. Browse the marketplace to find delicious surplus food!
         </p>
         <Link 
           href="/"
@@ -149,14 +142,14 @@ export function CartList({ initialItems }: { initialItems: CartItemWithProduct[]
                   <p className="text-sm text-[#1E293B]/60 mt-1">
                     from {item.product.merchant.name}
                   </p>
-                  {(item as any).originalQty && (
+                  {(item as CartItemExtended).originalQty && (
                     <div className="text-red-500 text-xs mt-1.5 font-semibold bg-red-50 px-2 py-1 rounded-md inline-block">
-                      Reduced from {(item as any).originalQty} (Only {item.product.quantity} left)
+                      Reduced from {(item as CartItemExtended).originalQty} (Only {item.product.quantity} left)
                     </div>
                   )}
                   <div className="mt-2">
                     <PriceBadge 
-                      tier={item.product.tier as any} 
+                      tier={item.product.tier as "tier1" | "tier2"} 
                       originalPrice={item.product.startPrice} 
                       discountedPrice={item.product.endPrice} 
                     />

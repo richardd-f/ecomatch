@@ -4,7 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CldUploadWidget } from "next-cloudinary";
 import { updateProductAction, deleteProductAction } from "../actions/inventory.actions";
-import { ImagePlus, X, Sparkles, Trash2 } from "lucide-react";
+import { ImagePlus, X, Trash2 } from "lucide-react";
+import Image from "next/image";
 
 type UploadedImage = { url: string; publicId: string };
 
@@ -121,7 +122,7 @@ export function EditProductForm({ productId, initialData }: EditProductFormProps
         <div className="flex flex-wrap gap-3">
           {images.map((img, i) => (
             <div key={img.publicId} className="relative w-24 h-24 rounded-xl overflow-hidden border-2 border-[#2F5D50]">
-              <img src={img.url} alt="" className="w-full h-full object-cover" />
+              <Image src={img.url} alt="" fill className="object-cover" />
               {i === 0 && (
                 <span className="absolute bottom-0 left-0 right-0 text-center text-[9px] font-bold bg-[#2F5D50] text-white py-0.5">
                   PRIMARY
@@ -139,6 +140,7 @@ export function EditProductForm({ productId, initialData }: EditProductFormProps
 
           <CldUploadWidget
             uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             onSuccess={(result: any) => {
               setImages((prev) => [
                 ...prev,
@@ -204,6 +206,7 @@ export function EditProductForm({ productId, initialData }: EditProductFormProps
             <button
               key={t.value}
               type="button"
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               onClick={() => setTier(t.value as any)}
               className={`flex-1 p-3 rounded-xl border-2 text-left transition-all ${
                 tier === t.value
