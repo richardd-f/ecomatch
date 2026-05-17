@@ -55,6 +55,7 @@ model User {
   // Geolocation (Optional, as users might deny browser location)
   latitude  Float?
   longitude Float?
+  pushSubscription String? @db.Text @map("push_subscription")
 
   createdAt DateTime @default(now()) @map("created_at")
 

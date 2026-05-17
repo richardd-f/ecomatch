@@ -7,27 +7,31 @@ import { Product } from "@/types/product.types";
 import { FadeIn } from "@/components/animations/FadeIn";
 import { FloatingElement } from "@/components/animations/FloatingElement";
 import { StaggerContainer } from "@/components/animations/StaggerContainer";
-import { StaggerItem } from "@/components/animations/StaggerItem";
+import { TierToggle } from "@/components/ui/TierToggle";
+import { EcologicalFilters } from "@/components/ui/EcologicalFilters";
+import { EcologicalCategory } from "@/interfaces/filter.types";
 
 const CATEGORIES = ["All", "Bakery", "Vegetables", "Prepared Meals"];
 
 export function HomeClient({ products }: { products: Product[] }) {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
-  const [tierFilter, setTierFilter] = useState<"all" | "tier1" | "tier2">("all");
+  const [tierFilter, setTierFilter] = useState<"tier1" | "tier2">("tier1");
+  const [activeEcoCategory, setActiveEcoCategory] = useState<EcologicalCategory>("All");
 
   const filtered = useMemo(() => {
     return products.filter((p) => {
       if (search && !p.name.toLowerCase().includes(search.toLowerCase())) return false;
-      if (activeCategory !== "All" && p.category !== activeCategory) return false;
-      if (tierFilter !== "all" && p.tier !== tierFilter) return false;
+      if (tierFilter === "tier1") {
+        if (p.tier !== "tier1") return false;
+        if (activeCategory !== "All" && p.category !== activeCategory) return false;
+      } else {
+        if (p.tier !== "tier2") return false;
+        if (activeEcoCategory !== "All" && p.category !== activeEcoCategory) return false;
+      }
       return true;
     });
-  }, [products, search, activeCategory, tierFilter]);
-
-  const onAddToCart = (product: Product, qty: number) => {
-    console.log("Added to cart", product.name, qty);
-  };
+  }, [products, search, activeCategory, activeEcoCategory, tierFilter]);
 
   return (
     <div className="flex flex-col gap-8 w-full max-w-7xl mx-auto pb-12 px-4 md:px-8">
@@ -59,8 +63,13 @@ export function HomeClient({ products }: { products: Product[] }) {
         </section>
       </FadeIn>
 
+      {/* Tier Toggle */}
+      <div className="pt-4 pb-2 z-30 sticky top-0 bg-[#F2EFE7]">
+        <TierToggle activeTier={tierFilter} onChange={setTierFilter} />
+      </div>
+
       {/* Discovery Section (Search & Filters) */}
-      <section className="flex flex-col gap-4 sticky top-0 z-20 bg-[#F2EFE7]/90 backdrop-blur-md py-4 -mx-4 px-4 md:mx-0 md:px-0">
+      <section className="flex flex-col gap-4 sticky top-16 z-20 bg-[#F2EFE7]/90 backdrop-blur-md pb-4 -mx-4 px-4 md:mx-0 md:px-0">
 
         {/* Search Bar */}
         <div className="relative w-full">
@@ -84,47 +93,28 @@ export function HomeClient({ products }: { products: Product[] }) {
         </div>
 
         {/* Filters Layout */}
-        <StaggerContainer delay={0.3} className="flex items-center gap-3 overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 [&::-webkit-scrollbar]:hidden">
-          <SlidersHorizontal className="w-5 h-5 shrink-0 text-[#1E293B]/50 stagger-item" />
-
-          {/* Categories */}
-          <div className="flex items-center gap-2">
-            {CATEGORIES.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`stagger-item shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${activeCategory === cat
-                    ? "bg-[#2F5D50] text-white shadow-md border-transparent"
-                    : "bg-white text-[#1E293B]/70 border border-[#1E293B]/10 hover:bg-[#1E293B]/5"
-                  }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-
-          {/* Divider */}
-          <div className="stagger-item shrink-0 h-6 w-px bg-[#1E293B]/10 mx-2" />
-
-          {/* Tier Filters */}
-          <div className="flex items-center gap-2">
-            {[
-              { id: "all", label: "All Tiers", activeClass: "bg-[#1E293B] text-white" },
-              { id: "tier1", label: "🏷 Discounted", activeClass: "bg-[#D4A373] text-white" },
-              { id: "tier2", label: "✨ Free", activeClass: "bg-[#A4B69A] text-white" },
-            ].map((tier) => (
-              <button
-                key={tier.id}
-                onClick={() => setTierFilter(tier.id as any)}
-                className={`stagger-item shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border ${tierFilter === tier.id
-                    ? `${tier.activeClass} shadow-md border-transparent`
-                    : "bg-white text-[#1E293B]/70 border-[#1E293B]/10 hover:bg-[#1E293B]/5"
-                  }`}
-              >
-                {tier.label}
-              </button>
-            ))}
-          </div>
+        <StaggerContainer delay={0.3} className="flex flex-col gap-3">
+          {tierFilter === "tier1" ? (
+            <div className="flex items-center gap-3 overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 [&::-webkit-scrollbar]:hidden">
+              <SlidersHorizontal className="w-5 h-5 shrink-0 text-[#1E293B]/50 stagger-item" />
+              <div className="flex items-center gap-2">
+                {CATEGORIES.map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setActiveCategory(cat)}
+                    className={`stagger-item shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${activeCategory === cat
+                        ? "bg-[#2F5D50] text-white shadow-md border-transparent"
+                        : "bg-white text-[#1E293B]/70 border border-[#1E293B]/10 hover:bg-[#1E293B]/5"
+                      }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <EcologicalFilters activeCategory={activeEcoCategory} onSelect={setActiveEcoCategory} />
+          )}
         </StaggerContainer>
       </section>
 
@@ -136,7 +126,7 @@ export function HomeClient({ products }: { products: Product[] }) {
       </div>
 
       {/* Grid */}
-      <ProductGrid products={filtered} onAddToCart={onAddToCart} />
+      <ProductGrid products={filtered} />
     </div>
   );
 }

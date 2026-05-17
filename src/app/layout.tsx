@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Navbar } from "@/components/NavBar";
 import { auth } from "../auth";
+import { NotificationModal } from "@/components/ui/NotificationModal";
 
 export const metadata: Metadata = {
   title: "EcoMatch | AI Food Rescue",
@@ -24,11 +25,12 @@ export default async function RootLayout({
       <body className="antialiased min-h-screen w-full flex flex-col">
         <Navbar 
           userName={user?.name ?? undefined}
-          userRole={user?.role?.toLowerCase() as any}
+          userRole={user?.role?.toLowerCase() as "consumer" | "merchant" | undefined}
           businessName={user?.role === "MERCHANT" ? user.name ?? undefined : undefined}
         />
         <main className="flex-grow w-full flex flex-col">
           {children}
+          {user?.role === "CONSUMER" && <NotificationModal />}
         </main>
       </body>
     </html>

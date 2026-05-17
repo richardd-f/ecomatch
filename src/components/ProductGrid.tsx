@@ -10,7 +10,7 @@ interface ProductGridProps {
   onAddToCart?: (product: Product, qty: number) => void;
 }
 
-export function ProductGrid({ products, onAddToCart }: ProductGridProps) {
+export function ProductGrid({ products }: ProductGridProps) {
   if (products.length === 0) {
     return (
       <div className="py-12 text-center" style={{ color: "#1E293B60" }}>
@@ -30,6 +30,7 @@ export function ProductGrid({ products, onAddToCart }: ProductGridProps) {
         >
           <div className="relative aspect-square overflow-hidden bg-[#F2EFE7] flex items-center justify-center">
             {product.imageUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={product.imageUrl}
                 alt={product.name}
@@ -59,12 +60,21 @@ export function ProductGrid({ products, onAddToCart }: ProductGridProps) {
               {product.name}
             </h3>
             <div className="mt-auto pt-2">
-              <PriceBadge
-                tier={product.tier}
-                originalPrice={product.originalPrice}
-                discountedPrice={product.discountedPrice}
-                size="sm"
-              />
+              {product.tier === "tier2" ? (
+                <div className="flex flex-col gap-1">
+                  <span className="text-xs font-semibold text-[#1E293B]">Volume: {product.quantity} {product.unit}</span>
+                  <span className="text-[10px] px-2 py-1 bg-[#F2EFE7] text-[#1E293B]/70 rounded-full w-fit">
+                    {product.category || "Ecological"}
+                  </span>
+                </div>
+              ) : (
+                <PriceBadge
+                  tier={product.tier}
+                  originalPrice={product.originalPrice}
+                  discountedPrice={product.discountedPrice}
+                  size="sm"
+                />
+              )}
             </div>
           </div>
         </Link>
