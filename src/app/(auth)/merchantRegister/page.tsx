@@ -100,9 +100,6 @@ export default function MerchantRegisterPage() {
           >
             <Zap className="w-5 h-5 flex-shrink-0" style={{ color: "#D4A373" }} />
             <div>
-              <p className="text-sm" style={{ color: "#D4A373", fontWeight: 700 }}>
-                Hackfest Fast Track
-              </p>
               <p className="text-xs mt-0.5" style={{ color: "rgba(212,163,115,0.7)" }}>
                 Your invite code skips the 2–3 day manual verification process.
               </p>
@@ -152,7 +149,7 @@ export default function MerchantRegisterPage() {
                 style={{ backgroundColor: "#D4A37320", color: "#D4A373", fontWeight: 600 }}
               >
                 <Zap className="w-3 h-3" />
-                Hackfest Fast Track
+                
               </span>
             </div>
 
