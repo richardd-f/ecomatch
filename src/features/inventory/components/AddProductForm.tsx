@@ -197,6 +197,37 @@ export function AddProductForm() {
         </div>
       </div>
 
+      {/* Metrics */}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="flex flex-col gap-1.5">
+          <label className="text-sm font-semibold text-[#1E293B]">
+            Quantity <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="number"
+            name="quantity"
+            required
+            min={1}
+            defaultValue={1}
+            className="px-3 py-2.5 border border-[#1E293B]/15 rounded-xl text-sm outline-none focus:border-[#2F5D50] focus:ring-2 focus:ring-[#2F5D50]/20 bg-white"
+          />
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <label className="text-sm font-semibold text-[#1E293B]">
+            Freshness Score (%) <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="number"
+            name="freshnessScore"
+            required
+            min={1}
+            max={100}
+            defaultValue={100}
+            className="px-3 py-2.5 border border-[#1E293B]/15 rounded-xl text-sm outline-none focus:border-[#2F5D50] focus:ring-2 focus:ring-[#2F5D50]/20 bg-white"
+          />
+        </div>
+      </div>
+
       {/* Expiry */}
       <div className="flex flex-col gap-1.5">
         <label className="text-sm font-semibold text-[#1E293B]">

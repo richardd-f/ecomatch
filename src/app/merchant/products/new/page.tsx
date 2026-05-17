@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { AddProductForm } from "@/features/inventory/components/AddProductForm";
-import ManualProductForm from "./ManualProductForm";
 
 export const metadata = {
   title: "Add New Product | EcoMatch Merchant",
@@ -28,8 +27,6 @@ export default function NewProductPage() {
       <div className="bg-white rounded-2xl border border-[#1E293B]/10 p-8 shadow-sm">
         <AddProductForm />
       </div>
-
-      <ManualProductForm />
     </div>
   );
 }
