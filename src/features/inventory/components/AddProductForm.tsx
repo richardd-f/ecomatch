@@ -4,7 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CldUploadWidget } from "next-cloudinary";
 import { createProductAction } from "../actions/inventory.actions";
-import { ImagePlus, X, Sparkles } from "lucide-react";
+import { analyzeProductImageAction } from "../actions/ai.actions";
+import { ImagePlus, X, Sparkles, Loader2 } from "lucide-react";
 
 type UploadedImage = { url: string; publicId: string };
 
@@ -12,8 +13,45 @@ export function AddProductForm() {
   const router = useRouter();
   const [images, setImages] = useState<UploadedImage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [error, setError] = useState("");
   const [tier, setTier] = useState<"TIER_1" | "TIER_2">("TIER_1");
+
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    startPrice: "",
+    endPrice: "",
+    quantity: "1",
+    freshnessScore: "100"
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleAnalyzeImage = async (url: string) => {
+    setIsAnalyzing(true);
+    try {
+      const result = await analyzeProductImageAction(url);
+      if (result.success && result.data) {
+        setTier(result.data.tier || "TIER_1");
+        setFormData(prev => ({
+          ...prev,
+          title: result.data.title || prev.title,
+          description: result.data.description || prev.description,
+          endPrice: result.data.dynamicPrice ? result.data.dynamicPrice.toString() : prev.endPrice,
+          quantity: result.data.quantity ? result.data.quantity.toString() : prev.quantity,
+          freshnessScore: result.data.freshnessScore ? result.data.freshnessScore.toString() : prev.freshnessScore
+        }));
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,11 +63,11 @@ export function AddProductForm() {
     setIsLoading(true);
     setError("");
 
-    const formData = new FormData(e.currentTarget);
-    formData.set("tier", tier);
-    formData.set("imageUrls", JSON.stringify(images.map((img) => img.url)));
+    const submitData = new FormData(e.currentTarget);
+    submitData.set("tier", tier);
+    submitData.set("imageUrls", JSON.stringify(images.map((img) => img.url)));
 
-    const result = await createProductAction(formData);
+    const result = await createProductAction(submitData);
 
     if (result?.error) {
       setError(result.error);
@@ -79,10 +117,16 @@ export function AddProductForm() {
           <CldUploadWidget
             uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
             onSuccess={(result: any) => {
-              setImages((prev) => [
-                ...prev,
-                { url: result.info.secure_url, publicId: result.info.public_id },
-              ]);
+              const newImageUrl = result.info.secure_url;
+              const newPublicId = result.info.public_id;
+              
+              setImages((prev) => {
+                const isFirst = prev.length === 0;
+                if (isFirst) {
+                  handleAnalyzeImage(newImageUrl);
+                }
+                return [...prev, { url: newImageUrl, publicId: newPublicId }];
+              });
             }}
           >
             {({ open }) => (
@@ -97,7 +141,7 @@ export function AddProductForm() {
             )}
           </CldUploadWidget>
         </div>
-        <p className="text-xs text-[#1E293B]/50">First image will be used as the primary display photo.</p>
+        <p className="text-xs text-[#1E293B]/50">First image will be used as the primary display photo, and will auto-fill your listing details.</p>
       </div>
 
       {/* Title */}
@@ -106,20 +150,26 @@ export function AddProductForm() {
           <label className="text-sm font-semibold text-[#1E293B]">
             Product Title <span className="text-red-500">*</span>
           </label>
-          {/* Placeholder for future AI autofill button */}
+          
           <button
             type="button"
             disabled
-            className="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium bg-[#F2EFE7] text-[#1E293B]/40 cursor-not-allowed"
+            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
+              isAnalyzing 
+                ? "bg-[#2F5D50]/10 text-[#2F5D50]" 
+                : "bg-[#F2EFE7] text-[#1E293B]/40"
+            }`}
           >
-            <Sparkles className="w-3 h-3" />
-            AI Autofill (Coming Soon)
+            {isAnalyzing ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+            {isAnalyzing ? "AI is Analyzing..." : "AI Autofill Ready"}
           </button>
         </div>
         <input
           type="text"
           name="title"
           required
+          value={formData.title}
+          onChange={handleChange}
           placeholder="e.g. Surplus Bread Assortment"
           className="px-3 py-2.5 border border-[#1E293B]/15 rounded-xl text-sm outline-none focus:border-[#2F5D50] focus:ring-2 focus:ring-[#2F5D50]/20 bg-white"
         />
@@ -134,6 +184,8 @@ export function AddProductForm() {
           name="description"
           required
           rows={4}
+          value={formData.description}
+          onChange={handleChange}
           placeholder="Describe the food, its condition, and any pickup instructions..."
           className="px-3 py-2.5 border border-[#1E293B]/15 rounded-xl text-sm outline-none focus:border-[#2F5D50] focus:ring-2 focus:ring-[#2F5D50]/20 bg-white resize-none"
         />
@@ -175,6 +227,8 @@ export function AddProductForm() {
             name="startPrice"
             required
             min={0}
+            value={formData.startPrice}
+            onChange={handleChange}
             placeholder="50000"
             className="px-3 py-2.5 border border-[#1E293B]/15 rounded-xl text-sm outline-none focus:border-[#2F5D50] focus:ring-2 focus:ring-[#2F5D50]/20 bg-white"
           />
@@ -189,7 +243,8 @@ export function AddProductForm() {
             name="endPrice"
             required={tier === "TIER_1"}
             min={0}
-            defaultValue={tier === "TIER_2" ? 0 : undefined}
+            value={tier === "TIER_2" ? 0 : formData.endPrice}
+            onChange={handleChange}
             disabled={tier === "TIER_2"}
             placeholder={tier === "TIER_2" ? "0 (Free)" : "20000"}
             className="px-3 py-2.5 border border-[#1E293B]/15 rounded-xl text-sm outline-none focus:border-[#2F5D50] focus:ring-2 focus:ring-[#2F5D50]/20 bg-white disabled:bg-[#F2EFE7] disabled:text-[#1E293B]/40"
@@ -208,7 +263,8 @@ export function AddProductForm() {
             name="quantity"
             required
             min={1}
-            defaultValue={1}
+            value={formData.quantity}
+            onChange={handleChange}
             className="px-3 py-2.5 border border-[#1E293B]/15 rounded-xl text-sm outline-none focus:border-[#2F5D50] focus:ring-2 focus:ring-[#2F5D50]/20 bg-white"
           />
         </div>
@@ -222,7 +278,8 @@ export function AddProductForm() {
             required
             min={1}
             max={100}
-            defaultValue={100}
+            value={formData.freshnessScore}
+            onChange={handleChange}
             className="px-3 py-2.5 border border-[#1E293B]/15 rounded-xl text-sm outline-none focus:border-[#2F5D50] focus:ring-2 focus:ring-[#2F5D50]/20 bg-white"
           />
         </div>
@@ -253,7 +310,7 @@ export function AddProductForm() {
         </button>
         <button
           type="submit"
-          disabled={isLoading}
+          disabled={isLoading || isAnalyzing}
           className="flex-1 py-3 rounded-xl bg-[#2F5D50] text-white text-sm font-bold hover:opacity-90 disabled:opacity-50 transition-opacity"
         >
           {isLoading ? "Publishing..." : "Publish Listing"}
