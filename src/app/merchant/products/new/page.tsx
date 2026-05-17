@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { AddProductForm } from "@/features/inventory/components/AddProductForm";
+import ManualProductForm from "./ManualProductForm";
 
 export const metadata = {
   title: "Add New Product | EcoMatch Merchant",
