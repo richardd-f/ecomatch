@@ -23,6 +23,11 @@ type CartItemWithProduct = {
     merchant: {
       name: string;
     };
+    images?: {
+      id: string;
+      imgUrl: string;
+      isPrimary: boolean;
+    }[];
   };
 };
 
@@ -125,9 +130,16 @@ export function CartList({ initialItems }: { initialItems: CartItemWithProduct[]
           <div 
             className="flex flex-col sm:flex-row gap-4 p-4 rounded-2xl bg-white border border-[#1E293B]/10 shadow-sm"
           >
-            {/* Image Placeholder */}
-            <div className="w-full sm:w-28 h-28 rounded-xl bg-[#F2EFE7] flex items-center justify-center shrink-0">
-              <ShoppingBag className="w-8 h-8 text-[#1E293B]/20" />
+            {/* Product Image */}
+            <div className="w-full sm:w-28 h-28 rounded-xl bg-[#F2EFE7] overflow-hidden flex items-center justify-center shrink-0">
+              {(() => {
+                const imgUrl = item.product.images?.find(img => img.isPrimary)?.imgUrl || item.product.images?.[0]?.imgUrl;
+                return imgUrl ? (
+                  <img src={imgUrl} alt={item.product.title} className="w-full h-full object-cover" />
+                ) : (
+                  <ShoppingBag className="w-8 h-8 text-[#1E293B]/20" />
+                );
+              })()}
             </div>
             
             <div className="flex flex-col flex-grow justify-between gap-3">

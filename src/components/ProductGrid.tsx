@@ -3,6 +3,7 @@ import { Product } from "../types/product.types";
 import { PriceBadge } from "./PriceBadge";
 import { StaggerContainer } from "./animations/StaggerContainer";
 import { StaggerItem } from "./animations/StaggerItem";
+import { ShoppingBag } from "lucide-react";
 
 interface ProductGridProps {
   products: Product[];
@@ -27,12 +28,16 @@ export function ProductGrid({ products, onAddToCart }: ProductGridProps) {
             className="group flex flex-col h-full rounded-2xl overflow-hidden border transition-all hover:shadow-md"
           style={{ backgroundColor: "white", borderColor: "#1E293B15" }}
         >
-          <div className="relative aspect-square overflow-hidden bg-gray-100">
-            <img
-              src={product.imageUrl}
-              alt={product.name}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            />
+          <div className="relative aspect-square overflow-hidden bg-[#F2EFE7] flex items-center justify-center">
+            {product.imageUrl ? (
+              <img
+                src={product.imageUrl}
+                alt={product.name}
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+            ) : (
+              <ShoppingBag className="w-12 h-12 text-[#1E293B]/20" />
+            )}
             {product.tier === "tier2" && (
               <div className="absolute top-2 left-2">
                 <span

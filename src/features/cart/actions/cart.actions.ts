@@ -19,6 +19,7 @@ export async function getCartAction() {
               merchant: {
                 select: { name: true },
               },
+              images: true,
             },
           },
         },
