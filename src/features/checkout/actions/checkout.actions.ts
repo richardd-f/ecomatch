@@ -70,10 +70,17 @@ export async function createCheckoutSessionAction() {
 
         // Reduce product stock
         for (const item of validItems) {
-          await tx.product.update({
+          const updatedProduct = await tx.product.update({
             where: { id: item.productId },
             data: { quantity: { decrement: item.quantity } },
           });
+
+          if (updatedProduct.quantity <= 0) {
+            await tx.product.update({
+              where: { id: item.productId },
+              data: { status: "SOLD" },
+            });
+          }
         }
 
         // Clear cart
@@ -151,10 +158,17 @@ export async function finalizeCheckoutAction(orderId: string, midtransTransactio
 
       // Reduce product stock
       for (const item of validItems) {
-        await tx.product.update({
+        const updatedProduct = await tx.product.update({
           where: { id: item.productId },
           data: { quantity: { decrement: item.quantity } },
         });
+
+        if (updatedProduct.quantity <= 0) {
+          await tx.product.update({
+            where: { id: item.productId },
+            data: { status: "SOLD" },
+          });
+        }
       }
 
       // Clear cart
