@@ -3,6 +3,18 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { auth } from "@/auth";
 
+export interface TriageResult {
+  title: string;
+  description: string;
+  dynamicPrice: number;
+  tier: "TIER_1" | "TIER_2";
+  quantity: number;
+  freshnessScore: number;
+  estimatedVolume: number;
+  ecologicalClassification: string[];
+  pickupNotes: string;
+}
+
 export async function analyzeProductImageAction(imageUrl: string) {
   const session = await auth();
   if (!session?.user || session.user.role !== "MERCHANT") {
@@ -38,15 +50,21 @@ export async function analyzeProductImageAction(imageUrl: string) {
       Classify the food into either "TIER_1" (high quality, relatively fresh) or "TIER_2" (nearing expiry, slightly degraded visual appeal).
       Estimate the quantity (number of items or portions) visible in the image.
       Provide a freshnessScore from 1 to 100 based on visual condition.
+      Estimate the volume of the food in liters or kg (estimatedVolume as a float).
+      Provide an ecological classification array indicating the waste category, e.g. ["Compostable", "Organic", "Animal Feed", "Human Consumption"].
+      Provide brief pickup instructions or notes for the buyer.
       
-      Respond with a JSON object matching exactly this schema:
+      Respond with a JSON object matching exactly this schema without any markdown wrappers:
       {
         "title": "string",
         "description": "string",
         "dynamicPrice": number,
         "tier": "TIER_1" | "TIER_2",
         "quantity": number,
-        "freshnessScore": number
+        "freshnessScore": number,
+        "estimatedVolume": number,
+        "ecologicalClassification": ["string"],
+        "pickupNotes": "string"
       }
     `;
 
@@ -60,8 +78,9 @@ export async function analyzeProductImageAction(imageUrl: string) {
       },
     ]);
 
-    const text = result.response.text();
-    const parsedResult = JSON.parse(text.trim());
+    let text = result.response.text();
+    text = text.replace(/```json/g, "").replace(/```/g, "").trim();
+    const parsedResult: TriageResult = JSON.parse(text);
     
     return { success: true, data: parsedResult };
   } catch (error) {

@@ -23,7 +23,10 @@ export function AddProductForm() {
     startPrice: "",
     endPrice: "",
     quantity: "1",
-    freshnessScore: "100"
+    freshnessScore: "100",
+    estimatedVolume: "",
+    ecologicalClassification: "",
+    pickupNotes: ""
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -43,7 +46,10 @@ export function AddProductForm() {
           description: result.data.description || prev.description,
           endPrice: result.data.dynamicPrice ? result.data.dynamicPrice.toString() : prev.endPrice,
           quantity: result.data.quantity ? result.data.quantity.toString() : prev.quantity,
-          freshnessScore: result.data.freshnessScore ? result.data.freshnessScore.toString() : prev.freshnessScore
+          freshnessScore: result.data.freshnessScore ? result.data.freshnessScore.toString() : prev.freshnessScore,
+          estimatedVolume: result.data.estimatedVolume ? result.data.estimatedVolume.toString() : prev.estimatedVolume,
+          ecologicalClassification: result.data.ecologicalClassification ? result.data.ecologicalClassification.join(", ") : prev.ecologicalClassification,
+          pickupNotes: result.data.pickupNotes || prev.pickupNotes
         }));
       }
     } catch (e) {
@@ -116,6 +122,7 @@ export function AddProductForm() {
 
           <CldUploadWidget
             uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             onSuccess={(result: any) => {
               const newImageUrl = result.info.secure_url;
               const newPublicId = result.info.public_id;
@@ -202,6 +209,7 @@ export function AddProductForm() {
             <button
               key={t.value}
               type="button"
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               onClick={() => setTier(t.value as any)}
               className={`flex-1 p-3 rounded-xl border-2 text-left transition-all ${
                 tier === t.value
@@ -283,6 +291,52 @@ export function AddProductForm() {
             className="px-3 py-2.5 border border-[#1E293B]/15 rounded-xl text-sm outline-none focus:border-[#2F5D50] focus:ring-2 focus:ring-[#2F5D50]/20 bg-white"
           />
         </div>
+      </div>
+
+      {/* Additional AI Metrics */}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="flex flex-col gap-1.5">
+          <label className="text-sm font-semibold text-[#1E293B]">
+            Est. Volume (L/Kg)
+          </label>
+          <input
+            type="number"
+            step="0.1"
+            name="estimatedVolume"
+            min={0}
+            value={formData.estimatedVolume}
+            onChange={handleChange}
+            className="px-3 py-2.5 border border-[#1E293B]/15 rounded-xl text-sm outline-none focus:border-[#2F5D50] focus:ring-2 focus:ring-[#2F5D50]/20 bg-white"
+          />
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <label className="text-sm font-semibold text-[#1E293B]">
+            Ecology Tags (comma separated)
+          </label>
+          <input
+            type="text"
+            name="ecologicalClassification"
+            value={formData.ecologicalClassification}
+            onChange={handleChange}
+            placeholder="e.g. Organic, Animal Feed"
+            className="px-3 py-2.5 border border-[#1E293B]/15 rounded-xl text-sm outline-none focus:border-[#2F5D50] focus:ring-2 focus:ring-[#2F5D50]/20 bg-white"
+          />
+        </div>
+      </div>
+
+      {/* Pickup Notes */}
+      <div className="flex flex-col gap-1.5">
+        <label className="text-sm font-semibold text-[#1E293B]">
+          Pickup Notes
+        </label>
+        <textarea
+          name="pickupNotes"
+          rows={2}
+          value={formData.pickupNotes}
+          onChange={handleChange}
+          placeholder="e.g. Please bring your own container, pickup at back door..."
+          className="px-3 py-2.5 border border-[#1E293B]/15 rounded-xl text-sm outline-none focus:border-[#2F5D50] focus:ring-2 focus:ring-[#2F5D50]/20 bg-white resize-none"
+        />
       </div>
 
       {/* Expiry */}

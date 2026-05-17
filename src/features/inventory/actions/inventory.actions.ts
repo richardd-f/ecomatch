@@ -19,6 +19,10 @@ export async function createProductAction(formData: FormData) {
   const imageUrls = JSON.parse(formData.get("imageUrls") as string) as string[];
   const quantity = parseInt(formData.get("quantity") as string);
   const freshnessScore = parseInt(formData.get("freshnessScore") as string);
+  const estimatedVolume = parseFloat(formData.get("estimatedVolume") as string);
+  const ecologicalClassificationStr = formData.get("ecologicalClassification") as string;
+  const ecologicalClassification = ecologicalClassificationStr ? ecologicalClassificationStr.split(",").map(s => s.trim()).filter(s => s.length > 0) : [];
+  const pickupNotes = formData.get("pickupNotes") as string | null;
 
   if (!title || !description || isNaN(startPrice) || isNaN(endPrice) || !tier || !expiresAt || imageUrls.length === 0) {
     return { error: "All fields are required." };
@@ -46,6 +50,9 @@ export async function createProductAction(formData: FormData) {
         expiresAt,
         quantity: isNaN(quantity) ? 1 : quantity,
         freshnessScore: isNaN(freshnessScore) ? null : freshnessScore,
+        estimatedVolume: isNaN(estimatedVolume) ? null : estimatedVolume,
+        ecologicalClassification,
+        pickupNotes: pickupNotes || null,
         merchantId: merchantUser.id,
         images: {
           create: imageUrls.map((url, i) => ({
