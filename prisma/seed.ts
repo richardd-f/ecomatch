@@ -26,7 +26,7 @@ async function main() {
   const hashedPassword = await bcrypt.hash("password123", 10);
 
   // Merchants
-  const merchant1 = await prisma.user.upsert({
+  const merchant1 = await prisma.user.create({
     data: {
       name: "Warung Mbak Sari",
       email: "sari@warungmbaksari.com",
@@ -37,7 +37,7 @@ async function main() {
     },
   });
 
-  const merchant2 = await prisma.user.upsert({
+  const merchant2 = await prisma.user.create({
     data: {
       name: "Kafe Bumi Hijau",
       email: "bumi@kafehijau.com",
@@ -48,7 +48,7 @@ async function main() {
     },
   });
 
-  const merchant3 = await prisma.user.upsert({
+  const merchant3 = await prisma.user.create({
     data: {
       name: "Bakeri Roti Nusantara",
       email: "roti@nusantara.com",
@@ -59,7 +59,7 @@ async function main() {
     },
   });
 
-  const merchant4 = await prisma.user.upsert({
+  const merchant4 = await prisma.user.create({
     data: {
       name: "Dapur Sehat Bu Tini",
       email: "tini@dapursehat.com",
@@ -71,7 +71,7 @@ async function main() {
   });
 
   // Consumers
-  const consumer1 = await prisma.user.upsert({
+  const consumer1 = await prisma.user.create({
     data: {
       name: "Budi Santoso",
       email: "budi@gmail.com",
@@ -82,7 +82,7 @@ async function main() {
     },
   });
 
-  const consumer2 = await prisma.user.upsert({
+  const consumer2 = await prisma.user.create({
     data: {
       name: "Dewi Rahayu",
       email: "dewi@gmail.com",
@@ -104,7 +104,7 @@ async function main() {
   const in24h = new Date(now.getTime() + 24 * 60 * 60 * 1000);
 
   // ── Merchant 1 products (Warung Mbak Sari) ──
-  const product1 = await prisma.product.upsert({
+  const product1 = await prisma.product.create({
     data: {
       merchantId: merchant1.id,
       title: "Nasi Bungkus Ayam Surplus",
@@ -129,7 +129,7 @@ async function main() {
     },
   });
 
-  const product2 = await prisma.product.upsert({
+  const product2 = await prisma.product.create({
     data: {
       merchantId: merchant1.id,
       title: "Ampas Tahu & Kulit Tahu Segar",
@@ -155,7 +155,7 @@ async function main() {
   });
 
   // ── Merchant 2 products (Kafe Bumi Hijau) ──
-  const product3 = await prisma.product.upsert({
+  const product3 = await prisma.product.create({
     data: {
       merchantId: merchant2.id,
       title: "Salad Bowl & Sandwich Sisa Lunch",
@@ -185,7 +185,7 @@ async function main() {
     },
   });
 
-  const product4 = await prisma.product.upsert({
+  const product4 = await prisma.product.create({
     data: {
       merchantId: merchant2.id,
       title: "Ampas Kopi & Kulit Buah Campur",
@@ -211,12 +211,12 @@ async function main() {
   });
 
   // ── Merchant 3 products (Bakeri Roti Nusantara) ──
-  const product5 = await prisma.product.upsert({
+  const product5 = await prisma.product.create({
     data: {
       merchantId: merchant3.id,
       title: "Assorted Roti Surplus — Paket Hemat",
       description:
-        "1 kantong berisi ±8 potong roti berbagai jenis: roti tawar, roti manis isi coklat, roti keju, dan croissant. Dipanggang pagi hari, masih empuk dan lezat. Tidak ada bahan pengawet.",
+        "1 kantong berisi ±8 potong roti berbagai jenis: roti tawar, roti manis isi coklat, roti keju, dan croissant. Dipanggang pagi hari, masih empuk and lezat. Tidak ada bahan pengawet.",
       startPrice: 60000,
       endPrice: 22000,
       tier: "TIER_1",
@@ -241,7 +241,7 @@ async function main() {
     },
   });
 
-  const product6 = await prisma.product.upsert({
+  const product6 = await prisma.product.create({
     data: {
       merchantId: merchant3.id,
       title: "Sisa Adonan & Remahan Roti",
@@ -267,7 +267,7 @@ async function main() {
   });
 
   // ── Merchant 4 products (Dapur Sehat Bu Tini) ──
-  const product7 = await prisma.product.upsert({
+  const product7 = await prisma.product.create({
     data: {
       merchantId: merchant4.id,
       title: "Catering Box Makan Siang — 3 Porsi",
@@ -292,7 +292,7 @@ async function main() {
     },
   });
 
-  const product8 = await prisma.product.upsert({
+  const product8 = await prisma.product.create({
     data: {
       merchantId: merchant4.id,
       title: "Sayuran Sisa Prep: Batang Bayam & Wortel",
@@ -326,7 +326,7 @@ async function main() {
 
   // ─── Cart & Cart Items (untuk consumer1) ──────────────────────────
 
-  const cart1 = await prisma.cart.upsert({
+  const cart1 = await prisma.cart.create({
     data: {
       userId: consumer1.id,
       items: {
@@ -342,7 +342,7 @@ async function main() {
 
   // ─── Orders (contoh order sudah PAID) ────────────────────────────
 
-  const order1 = await prisma.order.upsert({
+  const order1 = await prisma.order.create({
     data: {
       id: `ORDER-SEED-DEMO-001`,
       userId: consumer2.id,
@@ -365,7 +365,7 @@ async function main() {
     },
   });
 
-  const order2 = await prisma.order.upsert({
+  const order2 = await prisma.order.create({
     data: {
       id: `ORDER-SEED-DEMO-002`,
       userId: consumer1.id,

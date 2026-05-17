@@ -129,12 +129,12 @@ export function AddProductForm() {
               const newPublicId = result.info.public_id;
               
               setImages((prev) => {
-                const isFirst = prev.length === 0;
-                if (isFirst) {
-                  handleAnalyzeImage(newImageUrl);
-                }
                 return [...prev, { url: newImageUrl, publicId: newPublicId }];
               });
+
+              if (images.length === 0) {
+                handleAnalyzeImage(newImageUrl);
+              }
             }}
           >
             {({ open }) => (
