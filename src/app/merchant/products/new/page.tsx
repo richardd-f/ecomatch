@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function NewProductPage() {
   return (
-    <div className="max-w-2xl mx-auto w-full pt-8 pb-16">
+    <div className="max-w-2xl mx-auto w-full px-4 pt-8 pb-16">
       <Link
         href="/merchant"
         className="flex items-center gap-2 text-sm text-[#1E293B]/60 hover:text-[#1E293B] transition-colors mb-6 w-fit"
@@ -24,7 +24,7 @@ export default function NewProductPage() {
         </p>
       </div>
 
-      <div className="bg-white rounded-2xl border border-[#1E293B]/10 p-8 shadow-sm">
+      <div className="bg-white rounded-2xl border border-[#1E293B]/10 p-5 sm:p-8 shadow-sm">
         <AddProductForm />
       </div>
     </div>
