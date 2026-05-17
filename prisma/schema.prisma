@@ -62,7 +62,6 @@ model User {
   products Product[]
   cart     Cart?
   orders   Order[]
-  claims   Claim[]
 
   @@map("users")
 }
@@ -88,7 +87,6 @@ model Product {
   images     ProductImage[]
   cartItems  CartItem[]
   orderItems OrderItem[]
-  claims     Claim[]
 
   @@map("products")
 }
@@ -135,6 +133,7 @@ model Order {
   userId      String      @map("user_id")
   grossAmount Float       @map("gross_amount")
   status      OrderStatus @default(PENDING)
+  claimStatus ClaimStatus @default(PENDING) @map("claim_status")
 
   // Midtrans Specific Fields
   snapToken             String? @map("snap_token")
@@ -165,17 +164,3 @@ model OrderItem {
   @@map("order_items")
 }
 
-model Claim {
-  id        String      @id @default(cuid())
-  userId    String      @map("user_id")
-  productId String      @map("product_id")
-  qrToken   String      @unique @map("qr_token")
-  status    ClaimStatus @default(PENDING)
-  createdAt DateTime    @default(now()) @map("created_at")
-
-  // Relations
-  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-
-  @@map("claims")
-}

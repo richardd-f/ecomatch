@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Plus, Search, Filter, Store, Clock, Package, Image as ImageIcon } from "lucide-react";
+import { Plus, Search, Clock, Package, Image as ImageIcon, ScanLine } from "lucide-react";
 import { PriceBadge } from "@/components/PriceBadge";
+import { QRScannerModal } from "./QRScannerModal";
 
 // Defining the expected product type from the server
 export type MerchantProduct = {
@@ -21,6 +22,7 @@ export function MerchantDashboard({ initialProducts }: { initialProducts: Mercha
   const [filterTier, setFilterTier] = useState<"ALL" | "TIER_1" | "TIER_2">("ALL");
   const [filterStatus, setFilterStatus] = useState<string>("ALL");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isScannerOpen, setIsScannerOpen] = useState(false);
 
   const filteredProducts = initialProducts.filter((p) => {
     if (filterTier !== "ALL" && p.tier !== filterTier) return false;
@@ -42,14 +44,26 @@ export function MerchantDashboard({ initialProducts }: { initialProducts: Mercha
           </p>
         </div>
         
-        <Link
-          href="/merchant/products/new"
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#2F5D50] text-white font-medium hover:opacity-90 transition-opacity shadow-sm whitespace-nowrap"
-        >
-          <Plus className="w-5 h-5" />
-          Add New Product
-        </Link>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+          <button
+            onClick={() => setIsScannerOpen(true)}
+            className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border-2 border-[#2F5D50] text-[#2F5D50] font-medium hover:bg-[#F2EFE7] transition-colors shadow-sm whitespace-nowrap"
+          >
+            <ScanLine className="w-5 h-5" />
+            Scan QR
+          </button>
+          
+          <Link
+            href="/merchant/products/new"
+            className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#2F5D50] text-white font-medium hover:opacity-90 transition-opacity shadow-sm whitespace-nowrap"
+          >
+            <Plus className="w-5 h-5" />
+            Add New Product
+          </Link>
+        </div>
       </div>
+
+      <QRScannerModal isOpen={isScannerOpen} onClose={() => setIsScannerOpen(false)} />
 
       {/* Filters and Search */}
       <div className="flex flex-col md:flex-row gap-4 bg-white p-4 rounded-2xl border border-[#1E293B]/10 shadow-sm">
@@ -69,10 +83,10 @@ export function MerchantDashboard({ initialProducts }: { initialProducts: Mercha
 
         {/* Tier Filter */}
         <div className="flex bg-[#F2EFE7]/50 rounded-xl p-1 shrink-0 overflow-x-auto">
-          {["ALL", "TIER_1", "TIER_2"].map((tier) => (
+          {(["ALL", "TIER_1", "TIER_2"] as const).map((tier) => (
             <button
               key={tier}
-              onClick={() => setFilterTier(tier as any)}
+              onClick={() => setFilterTier(tier)}
               className={`px-4 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
                 filterTier === tier
                   ? "bg-white text-[#2F5D50] shadow-sm"
@@ -155,7 +169,9 @@ export function MerchantDashboard({ initialProducts }: { initialProducts: Mercha
 
                   <div className="flex items-center gap-2 pt-3 mt-1 border-t border-[#1E293B]/5 text-xs text-[#1E293B]/60">
                     <Clock className="w-3.5 h-3.5" />
-                    <span>Expires: {new Date(product.expiresAt).toLocaleDateString()}</span>
+                    <span>
+                      Expires: <span suppressHydrationWarning>{new Date(product.expiresAt).toLocaleDateString()}</span>
+                    </span>
                   </div>
                 </div>
               </div>
