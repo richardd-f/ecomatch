@@ -42,6 +42,8 @@ export function ProductDetailClient({ product, isLoggedIn }: { product: Product;
 
   const allImages = [product.imageUrl, ...product.additionalImages].filter(Boolean);
   const isFree = product.tier === "tier2";
+  // eslint-disable-next-line react-hooks/purity
+  const isExpired = new Date(product.expiresAt).getTime() - Date.now() <= 0;
   const savings = product.originalPrice - product.discountedPrice;
   const savingsPct = product.originalPrice > 0 ? Math.round((savings / product.originalPrice) * 100) : 0;
 
@@ -225,7 +227,7 @@ export function ProductDetailClient({ product, isLoggedIn }: { product: Product;
           >
             <Clock className="w-4 h-4 flex-shrink-0" style={{ color: "#D4A373" }} />
             <span className="text-sm" style={{ color: "#D4A373", fontWeight: 600 }}>
-              Available for {timeUntil(product.expiresAt)} — claim before it expires!
+              {isExpired ? "Product expired" : `Available for ${timeUntil(product.expiresAt)} — claim before it expires!`}
             </span>
           </div>
 
@@ -281,16 +283,18 @@ export function ProductDetailClient({ product, isLoggedIn }: { product: Product;
 
             <button
               onClick={handleAddToCart}
-              disabled={isLoading || added || product.quantity <= 0 || product.status !== "AVAILABLE"}
+              disabled={isLoading || added || product.quantity <= 0 || product.status !== "AVAILABLE" || isExpired}
               className="w-full py-4 rounded-xl text-white flex items-center justify-center gap-2 transition-all disabled:opacity-80 disabled:cursor-not-allowed"
               style={{
-                backgroundColor: (product.quantity <= 0 || product.status !== "AVAILABLE" || added) ? "#A4B69A" : "#2F5D50",
+                backgroundColor: (product.quantity <= 0 || product.status !== "AVAILABLE" || isExpired || added) ? "#A4B69A" : "#2F5D50",
                 fontWeight: 700,
                 fontSize: "0.9375rem",
                 transform: added ? "scale(0.98)" : "scale(1)",
               }}
             >
-              {(product.quantity <= 0 || product.status !== "AVAILABLE") ? (
+              {isExpired ? (
+                <>Expired</>
+              ) : (product.quantity <= 0 || product.status !== "AVAILABLE") ? (
                 <>Out of Stock</>
               ) : added ? (
                 <>✓ Added to Cart</>

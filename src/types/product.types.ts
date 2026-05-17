@@ -15,4 +15,5 @@ export interface Product {
   fullDescription: string;
   quantity: number;
   unit: string;
+  status?: string;
 }
