@@ -51,14 +51,11 @@ export function ProductDetailClient({ product, isLoggedIn }: { product: Product;
       return;
     }
     setIsLoading(true);
-    // Add multiple times based on qty
-    for (let i = 0; i < qty; i++) {
-      const res = await addToCartAction(product.id);
-      if (res && "error" in res && res.error) {
-        if (res.error === "Must be logged in to add to cart") {
-          router.push("/login");
-          return;
-        }
+    const res = await addToCartAction(product.id, qty);
+    if (res && "error" in res && res.error) {
+      if (res.error === "Must be logged in to add to cart") {
+        router.push("/login");
+        return;
       }
     }
     setIsLoading(false);

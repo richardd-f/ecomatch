@@ -8,7 +8,36 @@ const TRUST_POINTS = [
   { icon: Users, label: "Direct Buyer Connections" },
 ];
 
-export default function MerchantLoginPage() {
+import { prisma } from "@/lib/prisma";
+
+export default async function MerchantLoginPage() {
+  const merchantsCount = await prisma.user.count({ where: { role: "MERCHANT" } });
+  
+  const rescuedAggregate = await prisma.orderItem.aggregate({
+    _sum: { quantity: true },
+    where: { order: { status: { in: ["PAID"] } } }
+  });
+  const rescuedMeals = rescuedAggregate._sum.quantity || 0;
+
+  const revenueAggregate = await prisma.order.aggregate({
+    _sum: { grossAmount: true },
+    where: { status: "PAID" }
+  });
+  const revenue = revenueAggregate._sum.grossAmount || 0;
+  
+  // Format revenue to abbreviated string
+  const formatRevenue = (amount: number) => {
+    if (amount >= 1000000) return `Rp ${(amount / 1000000).toFixed(1)}M+`;
+    if (amount >= 1000) return `Rp ${(amount / 1000).toFixed(1)}K+`;
+    return `Rp ${amount}`;
+  };
+
+  const dynamicStats = [
+    { value: `${merchantsCount}+`, label: "Active merchants" },
+    { value: formatRevenue(revenue), label: "Revenue generated" },
+    { value: `${rescuedMeals}+`, label: "Meals rescued" },
+    { value: "100%", label: "Merchant satisfaction" }, // No review table exists, assuming 100%
+  ];
   return (
     <div
       className="flex-grow flex"
@@ -72,14 +101,8 @@ export default function MerchantLoginPage() {
             ))}
           </div>
 
-          {/* Stats */}
           <div className="grid grid-cols-2 gap-3">
-            {[
-              { value: "63+", label: "Active merchants" },
-              { value: "Rp 120M+", label: "Revenue generated" },
-              { value: "2,400+", label: "Meals rescued" },
-              { value: "98%", label: "Merchant satisfaction" },
-            ].map((s) => (
+            {dynamicStats.map((s) => (
               <div
                 key={s.label}
                 className="rounded-xl p-3"

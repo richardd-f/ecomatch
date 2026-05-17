@@ -19,15 +19,40 @@ type CartItemWithProduct = {
     startPrice: number;
     endPrice: number;
     tier: string;
+    quantity: number;
     merchant: {
       name: string;
     };
+    images?: {
+      id: string;
+      imgUrl: string;
+      isPrimary: boolean;
+    }[];
   };
 };
 
 export function CartList({ initialItems }: { initialItems: CartItemWithProduct[] }) {
-  const [items, setItems] = useState(initialItems);
+  const [items, setItems] = useState(() => 
+    initialItems.map(item => {
+      if (item.quantity > item.product.quantity) {
+        return { ...item, originalQty: item.quantity, quantity: item.product.quantity };
+      }
+      return item;
+    })
+  );
+  
   const [isPending, startTransition] = useTransition();
+
+  // If we adjusted quantities, sync with backend
+  import("react").then(({ useEffect }) => {
+    useEffect(() => {
+      items.forEach(item => {
+        if ((item as any).originalQty) {
+          updateCartItemQuantityAction(item.id, item.quantity);
+        }
+      });
+    }, []);
+  });
 
   if (items.length === 0) {
     return (
@@ -54,15 +79,21 @@ export function CartList({ initialItems }: { initialItems: CartItemWithProduct[]
   const handleUpdateQuantity = (itemId: string, newQuantity: number) => {
     if (newQuantity < 1) return;
     
+    // Find the item to check its max quantity
+    const targetItem = items.find(i => i.id === itemId);
+    if (!targetItem) return;
+
+    // Enforce max quantity limit
+    const finalQuantity = Math.min(newQuantity, targetItem.product.quantity);
+    
     // Optimistic update
     setItems((current) => 
-      current.map(item => item.id === itemId ? { ...item, quantity: newQuantity } : item)
+      current.map(item => item.id === itemId ? { ...item, quantity: finalQuantity, originalQty: undefined } : item)
     );
 
     startTransition(async () => {
-      const res = await updateCartItemQuantityAction(itemId, newQuantity);
+      const res = await updateCartItemQuantityAction(itemId, finalQuantity);
       if (res?.error) {
-        // Revert on error (simple reload or we could cache previous state)
         window.location.reload();
       }
     });
@@ -99,9 +130,16 @@ export function CartList({ initialItems }: { initialItems: CartItemWithProduct[]
           <div 
             className="flex flex-col sm:flex-row gap-4 p-4 rounded-2xl bg-white border border-[#1E293B]/10 shadow-sm"
           >
-            {/* Image Placeholder */}
-            <div className="w-full sm:w-28 h-28 rounded-xl bg-[#F2EFE7] flex items-center justify-center shrink-0">
-              <ShoppingBag className="w-8 h-8 text-[#1E293B]/20" />
+            {/* Product Image */}
+            <div className="w-full sm:w-28 h-28 rounded-xl bg-[#F2EFE7] overflow-hidden flex items-center justify-center shrink-0">
+              {(() => {
+                const imgUrl = item.product.images?.find(img => img.isPrimary)?.imgUrl || item.product.images?.[0]?.imgUrl;
+                return imgUrl ? (
+                  <img src={imgUrl} alt={item.product.title} className="w-full h-full object-cover" />
+                ) : (
+                  <ShoppingBag className="w-8 h-8 text-[#1E293B]/20" />
+                );
+              })()}
             </div>
             
             <div className="flex flex-col flex-grow justify-between gap-3">
@@ -111,6 +149,11 @@ export function CartList({ initialItems }: { initialItems: CartItemWithProduct[]
                   <p className="text-sm text-[#1E293B]/60 mt-1">
                     from {item.product.merchant.name}
                   </p>
+                  {(item as any).originalQty && (
+                    <div className="text-red-500 text-xs mt-1.5 font-semibold bg-red-50 px-2 py-1 rounded-md inline-block">
+                      Reduced from {(item as any).originalQty} (Only {item.product.quantity} left)
+                    </div>
+                  )}
                   <div className="mt-2">
                     <PriceBadge 
                       tier={item.product.tier as any} 
@@ -145,7 +188,7 @@ export function CartList({ initialItems }: { initialItems: CartItemWithProduct[]
                   </span>
                   <button 
                     onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
-                    disabled={isPending}
+                    disabled={isPending || item.quantity >= item.product.quantity}
                     className="p-1.5 rounded-md hover:bg-white text-[#1E293B]/70 disabled:opacity-50 transition-colors"
                   >
                     <Plus className="w-3 h-3" />
