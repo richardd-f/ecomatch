@@ -45,6 +45,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     fullDescription: dbProduct.description,
     quantity: dbProduct.quantity,
     unit: "pcs",
+    status: dbProduct.status,
   };
 
   return <ProductDetailClient product={product} isLoggedIn={!!session?.user} />;

@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { useState } from "react";
 import { OrderPaymentButton } from "@/features/checkout/components/OrderPaymentButton";
@@ -7,7 +8,6 @@ import { ShoppingBag, QrCode, Clock, CheckCircle2, XCircle, AlertCircle } from "
 import { format } from "date-fns";
 
 interface OrderCardProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   order: any; // We'll pass the Prisma order with items and products
 }
 
@@ -67,29 +67,35 @@ export function OrderCard({ order }: OrderCardProps) {
 
       {/* Items */}
       <div className="p-5 flex flex-col gap-4">
-        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-        {order.items.map((item: any) => (
-          <div key={item.id} className="flex items-start gap-4 pb-4 border-b border-[#1E293B]/5 last:border-0 last:pb-0">
-            <div className="w-14 h-14 rounded-xl bg-[#F2EFE7] flex items-center justify-center shrink-0">
-              <ShoppingBag className="w-5 h-5 text-[#1E293B]/20" />
-            </div>
-            <div className="flex-grow">
-              <h3 className="font-bold text-[#1E293B] text-sm line-clamp-1">{item.product.title}</h3>
-              <p className="text-xs text-[#1E293B]/60 mt-0.5">
-                Qty: {item.quantity}
-              </p>
-            </div>
-            <div className="text-right">
-              {item.priceAtPurchase > 0 ? (
-                <p className="text-sm font-bold text-[#1E293B]">
-                  Rp {(item.priceAtPurchase * item.quantity).toLocaleString("id-ID")}
+        {order.items.map((item: any) => {
+          const imgUrl = item.product.images?.find((img: any) => img.isPrimary)?.imgUrl || item.product.images?.[0]?.imgUrl;
+          return (
+            <div key={item.id} className="flex items-start gap-4 pb-4 border-b border-[#1E293B]/5 last:border-0 last:pb-0">
+              <div className="w-14 h-14 rounded-xl bg-[#F2EFE7] overflow-hidden flex items-center justify-center shrink-0">
+                {imgUrl ? (
+                  <img src={imgUrl} alt={item.product.title} className="w-full h-full object-cover" />
+                ) : (
+                  <ShoppingBag className="w-5 h-5 text-[#1E293B]/20" />
+                )}
+              </div>
+              <div className="flex-grow">
+                <h3 className="font-bold text-[#1E293B] text-sm line-clamp-1">{item.product.title}</h3>
+                <p className="text-xs text-[#1E293B]/60 mt-0.5">
+                  Qty: {item.quantity}
                 </p>
-              ) : (
-                <p className="text-sm font-bold text-[#2F5D50]">FREE</p>
-              )}
+              </div>
+              <div className="text-right">
+                {item.priceAtPurchase > 0 ? (
+                  <p className="text-sm font-bold text-[#1E293B]">
+                    Rp {(item.priceAtPurchase * item.quantity).toLocaleString("id-ID")}
+                  </p>
+                ) : (
+                  <p className="text-sm font-bold text-[#2F5D50]">FREE</p>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Footer / Actions */}

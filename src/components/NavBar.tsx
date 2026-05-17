@@ -10,10 +10,11 @@ export const NAV_CONFIG = {
   consumer: {
     mainNav: [
       { label: "Marketplace", href: "/" },
+      { label: "Orders", href: "/myItems" },
       { label: "About", href: "/about" }
     ],
     dropdown: [
-      { label: "My Items", href: "/myItems", icon: "Package" }
+      { label: "Orders", href: "/myItems", icon: "Package" }
     ]
   },
   merchant: {

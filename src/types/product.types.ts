@@ -16,4 +16,5 @@ export interface Product {
   quantity: number;
   unit: string;
   distanceKm?: number;
+  status?: string;
 }
