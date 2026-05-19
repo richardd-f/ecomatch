@@ -12,13 +12,13 @@ async function main() {
   console.log("🌱 Seeding database...");
 
   // ─── Clean up existing data (urutan penting karena foreign key) ───
-  await prisma.orderItem.deleteMany();
-  await prisma.order.deleteMany();
-  await prisma.cartItem.deleteMany();
-  await prisma.cart.deleteMany();
-  await prisma.productImage.deleteMany();
-  await prisma.product.deleteMany();
-  await prisma.user.deleteMany();
+  // await prisma.orderItem.deleteMany();
+  // await prisma.order.deleteMany();
+  // await prisma.cartItem.deleteMany();
+  // await prisma.cart.deleteMany();
+  // await prisma.productImage.deleteMany();
+  // await prisma.product.deleteMany();
+  // await prisma.user.deleteMany();
 
   // ─── Users ───────────────────────────────────────────────────────
 
