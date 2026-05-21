@@ -29,6 +29,8 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN pnpm prisma generate
 RUN pnpm build
 RUN ls -la .next && ls -la .next/standalone
+# Dereference pnpm symlinks so Docker COPY picks up real files (WASM engine included)
+RUN cp -rL /app/node_modules/@prisma /app/.next/standalone/node_modules/
 
 # -------- Stage 2: Runtime --------
 FROM node:22-slim AS runner
@@ -38,7 +40,7 @@ ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
 ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:/app/node_modules/.bin:$PATH"
+ENV PATH="$PNPM_HOME:/tools/node_modules/.bin:/app/node_modules/.bin:$PATH"
 
 RUN corepack enable && corepack prepare pnpm@10.15.0 --activate
 RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates \
@@ -53,12 +55,14 @@ COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/prisma.config.ts ./
 
-# Install CLI tools and regenerate Prisma client for runtime
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+# Install CLI tools in /tools — isolated from /app/node_modules so pnpm never
+# reconciles @prisma/client and wipes the pre-generated WASM engine
+WORKDIR /tools
+RUN --mount=type=cache,id=pnpm-tools,target=/pnpm/store \
     pnpm config set store-dir /pnpm/store && \
-    pnpm add prisma@7.2.0 tsx dotenv @prisma/client@7.2.0 @prisma/adapter-pg pg \
-    && pnpm prisma generate
+    pnpm add prisma@7.2.0 tsx dotenv
 
+WORKDIR /app
 EXPOSE 3000
 
 CMD ["node" , "server.js"]
