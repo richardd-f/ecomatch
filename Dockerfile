@@ -30,7 +30,9 @@ RUN pnpm prisma generate
 RUN pnpm build
 RUN ls -la .next && ls -la .next/standalone
 # Dereference pnpm symlinks so Docker COPY picks up real files (WASM engine included)
-RUN cp -rL /app/node_modules/@prisma /app/.next/standalone/node_modules/
+# mkdir -p guards against standalone/node_modules not existing (e.g. empty trace)
+RUN mkdir -p /app/.next/standalone/node_modules && \
+    cp -rL /app/node_modules/@prisma /app/.next/standalone/node_modules/
 
 # -------- Stage 2: Runtime --------
 FROM node:22-slim AS runner
