@@ -29,9 +29,10 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN pnpm prisma generate
 RUN pnpm build
 RUN ls -la .next && ls -la .next/standalone
-# Dereference pnpm symlinks so Docker COPY picks up real files (WASM engine included)
-# mkdir -p guards against standalone/node_modules not existing (e.g. empty trace)
-RUN mkdir -p /app/.next/standalone/node_modules && \
+# Replace the broken pnpm symlinks that Next.js file-tracing left in standalone
+# with real dereferenced files so the WASM engine is intact after Docker COPY
+RUN rm -rf /app/.next/standalone/node_modules/@prisma && \
+    mkdir -p /app/.next/standalone/node_modules && \
     cp -rL /app/node_modules/@prisma /app/.next/standalone/node_modules/
 
 # -------- Stage 2: Runtime --------
