@@ -35,7 +35,6 @@ export function EditProductForm({ productId, initialData }: EditProductFormProps
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState("");
   const [tier, setTier] = useState<"TIER_1" | "TIER_2">(initialData.tier);
-  const [endPrice, setEndPrice] = useState<number>(initialData.endPrice);
 
   // Format date for datetime-local input
   // local date string format: YYYY-MM-DDThh:mm
@@ -245,8 +244,7 @@ export function EditProductForm({ productId, initialData }: EditProductFormProps
             name="endPrice"
             required={tier === "TIER_1"}
             min={0}
-            value={tier === "TIER_2" ? 0 : endPrice}
-            onChange={(e) => setEndPrice(parseFloat(e.target.value))}
+            defaultValue={tier === "TIER_2" ? 0 : initialData.endPrice}
             disabled={tier === "TIER_2"}
             placeholder={tier === "TIER_2" ? "0 (Free)" : "20000"}
             className="px-3 py-2.5 border border-[#1E293B]/15 rounded-xl text-sm outline-none focus:border-[#2F5D50] focus:ring-2 focus:ring-[#2F5D50]/20 bg-white disabled:bg-[#F2EFE7] disabled:text-[#1E293B]/40"

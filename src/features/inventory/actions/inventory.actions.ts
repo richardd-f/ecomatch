@@ -13,9 +13,8 @@ export async function createProductAction(formData: FormData) {
   const title = formData.get("title") as string;
   const description = formData.get("description") as string;
   const startPrice = parseFloat(formData.get("startPrice") as string);
+  const endPrice = parseFloat(formData.get("endPrice") as string);
   const tier = formData.get("tier") as "TIER_1" | "TIER_2";
-  const endPriceStr = formData.get("endPrice") as string | null;
-  const endPrice = tier === "TIER_2" ? 0 : (endPriceStr ? parseFloat(endPriceStr) : NaN);
   const expiresAt = new Date(formData.get("expiresAt") as string);
   const imageUrls = JSON.parse(formData.get("imageUrls") as string) as string[];
   const quantity = parseInt(formData.get("quantity") as string);
@@ -84,9 +83,8 @@ export async function updateProductAction(productId: string, formData: FormData)
   const title = formData.get("title") as string;
   const description = formData.get("description") as string;
   const startPrice = parseFloat(formData.get("startPrice") as string);
+  const endPrice = parseFloat(formData.get("endPrice") as string);
   const tier = formData.get("tier") as "TIER_1" | "TIER_2";
-  const endPriceStr = formData.get("endPrice") as string | null;
-  const endPrice = tier === "TIER_2" ? 0 : (endPriceStr ? parseFloat(endPriceStr) : NaN);
   const expiresAt = new Date(formData.get("expiresAt") as string);
   const imageUrls = JSON.parse(formData.get("imageUrls") as string) as string[];
   const quantity = parseInt(formData.get("quantity") as string);
